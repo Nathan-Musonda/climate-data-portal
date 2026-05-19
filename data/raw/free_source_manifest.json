@@ -1,0 +1,14 @@
+{
+  "outputs": {
+    "wfp_food_prices": "C:\\Users\\Nathan Musonda\\OneDrive\\Desktop\\Climate Data Visualization Portal\\data\\raw\\wfp_food_prices_zambia.csv"
+  },
+  "errors": {},
+  "sources": {
+    "open_meteo": "https://open-meteo.com/en/docs/historical-weather-api",
+    "wfp_hdx_food_prices": "https://data.humdata.org/dataset/wfp-food-prices-for-zambia",
+    "reliefweb": "https://apidoc.reliefweb.int/",
+    "modis_ndvi": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1",
+    "world_bank_cckp": "https://worldbank.github.io/climateknowledgeportal/",
+    "faostat": "https://www.fao.org/faostat/"
+  }
+}

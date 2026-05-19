@@ -1,0 +1,555 @@
+[
+  {
+    "province": "Eastern",
+    "district": "Chadiza",
+    "latitude": -14.10831,
+    "longitude": 32.45191,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Chifunabuli",
+    "latitude": -11.0901,
+    "longitude": 29.6324,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Chipili",
+    "latitude": -10.48031,
+    "longitude": 29.18358,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Kawambwa",
+    "latitude": -9.7656,
+    "longitude": 29.42079,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Lunga",
+    "latitude": -11.57071,
+    "longitude": 30.11551,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Mansa",
+    "latitude": -11.12408,
+    "longitude": 28.99818,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Milengi",
+    "latitude": -11.93834,
+    "longitude": 29.16423,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Mwansabombwe",
+    "latitude": -9.92098,
+    "longitude": 28.78135,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Mwense",
+    "latitude": -10.51995,
+    "longitude": 28.7225,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Nchelenge",
+    "latitude": -9.3675,
+    "longitude": 28.86202,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Luapula",
+    "district": "Samfya",
+    "latitude": -11.74663,
+    "longitude": 29.61805,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Chilanga",
+    "latitude": -15.45192,
+    "longitude": 28.06246,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Chongwe",
+    "latitude": -15.38957,
+    "longitude": 28.61973,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Kafue",
+    "latitude": -15.7229,
+    "longitude": 28.55481,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Luangwa",
+    "latitude": -15.35287,
+    "longitude": 29.8661,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Lusaka",
+    "latitude": -15.42653,
+    "longitude": 28.34583,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Lusaka",
+    "district": "Rufunsa",
+    "latitude": -15.16364,
+    "longitude": 29.50264,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Chinsali",
+    "latitude": -10.29771,
+    "longitude": 32.13334,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Isoka",
+    "latitude": -10.02184,
+    "longitude": 32.90896,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Kanchibiya",
+    "latitude": -11.53535,
+    "longitude": 30.85371,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Lavushimanda",
+    "latitude": -12.59259,
+    "longitude": 30.84553,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Mafinga",
+    "latitude": -10.32289,
+    "longitude": 33.34085,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Mpika",
+    "latitude": -12.04934,
+    "longitude": 31.82814,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Nakonde",
+    "latitude": -9.46528,
+    "longitude": 32.60676,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Muchinga",
+    "district": "Shiwang'Andu",
+    "latitude": -11.0882,
+    "longitude": 31.74468,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Chavuma",
+    "latitude": -13.2938,
+    "longitude": 22.55563,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Ikelenge",
+    "latitude": -11.25368,
+    "longitude": 24.31717,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Kabompo",
+    "latitude": -13.51711,
+    "longitude": 23.9857,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Kalumbila",
+    "latitude": -12.36263,
+    "longitude": 25.64661,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Kasempa",
+    "latitude": -13.79514,
+    "longitude": 26.05666,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Manyinga",
+    "latitude": -13.08097,
+    "longitude": 24.3148,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Mufumbwe",
+    "latitude": -13.76586,
+    "longitude": 25.2719,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Mushindano",
+    "latitude": -12.49988,
+    "longitude": 26.97135,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Mwinilunga",
+    "latitude": -12.15637,
+    "longitude": 24.7285,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Solwezi",
+    "latitude": -12.30429,
+    "longitude": 26.38669,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "North-Western",
+    "district": "Zambezi",
+    "latitude": -13.59914,
+    "longitude": 22.85781,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Chilubi",
+    "latitude": -11.09028,
+    "longitude": 30.27097,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Kaputa",
+    "latitude": -8.81422,
+    "longitude": 29.66393,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Kasama",
+    "latitude": -10.55054,
+    "longitude": 30.91398,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Lunte",
+    "latitude": -9.82838,
+    "longitude": 30.48372,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Lupososhi",
+    "latitude": -10.65587,
+    "longitude": 29.55092,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Luwingu",
+    "latitude": -10.55029,
+    "longitude": 30.30076,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Mbala",
+    "latitude": -8.96383,
+    "longitude": 31.48241,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Mporokoso",
+    "latitude": -9.4635,
+    "longitude": 29.9234,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Mpulungu",
+    "latitude": -8.98352,
+    "longitude": 30.77612,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Mungwi",
+    "latitude": -9.99068,
+    "longitude": 31.73927,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Nsama",
+    "latitude": -8.81428,
+    "longitude": 30.1162,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Northern",
+    "district": "Senga Hill",
+    "latitude": -9.27713,
+    "longitude": 31.59124,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Chikankanta",
+    "latitude": -16.03184,
+    "longitude": 28.24139,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Chirundu",
+    "latitude": -16.10356,
+    "longitude": 28.67415,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Choma",
+    "latitude": -16.85989,
+    "longitude": 27.02335,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Gwembe",
+    "latitude": -16.66141,
+    "longitude": 27.90272,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Itezhi-Tezhi",
+    "latitude": -15.92439,
+    "longitude": 26.24655,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Kalomo",
+    "latitude": -16.83809,
+    "longitude": 26.49886,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Kazungula",
+    "latitude": -17.05126,
+    "longitude": 25.68289,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Livingstone",
+    "latitude": -17.81025,
+    "longitude": 25.8224,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Mazabuka",
+    "latitude": -15.89416,
+    "longitude": 27.73041,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Monze",
+    "latitude": -16.1286,
+    "longitude": 27.55237,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Namwala",
+    "latitude": -15.95712,
+    "longitude": 26.75338,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Pemba",
+    "latitude": -16.76532,
+    "longitude": 27.39101,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Siavonga",
+    "latitude": -16.40917,
+    "longitude": 28.48168,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Sinazongwe",
+    "latitude": -17.45643,
+    "longitude": 27.26096,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Southern",
+    "district": "Zimba",
+    "latitude": -17.66624,
+    "longitude": 26.51078,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Kalabo",
+    "latitude": -14.85629,
+    "longitude": 22.5064,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Kaoma",
+    "latitude": -14.5184,
+    "longitude": 24.40657,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Limulunga",
+    "latitude": -14.95976,
+    "longitude": 23.42216,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Luampa",
+    "latitude": -15.4327,
+    "longitude": 24.66552,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Lukulu",
+    "latitude": -14.37492,
+    "longitude": 23.81961,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Mitete",
+    "latitude": -14.27495,
+    "longitude": 22.62053,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Mongu",
+    "latitude": -15.44326,
+    "longitude": 23.46662,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Mulobezi",
+    "latitude": -16.28019,
+    "longitude": 24.76522,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Mwandi",
+    "latitude": -17.11222,
+    "longitude": 24.67461,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Nalolo",
+    "latitude": -15.83088,
+    "longitude": 22.95005,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Nkeyema",
+    "latitude": -14.86386,
+    "longitude": 25.18223,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Senanga",
+    "latitude": -16.02331,
+    "longitude": 23.87531,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Sesheke",
+    "latitude": -16.93212,
+    "longitude": 23.87275,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Shangombo",
+    "latitude": -16.49616,
+    "longitude": 22.53301,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Sikongo",
+    "latitude": -15.3197,
+    "longitude": 22.31227,
+    "error": "Not fetched because --cached-only was used."
+  },
+  {
+    "province": "Western",
+    "district": "Sioma",
+    "latitude": -16.75175,
+    "longitude": 23.1505,
+    "error": "Not fetched because --cached-only was used."
+  }
+]

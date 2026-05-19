@@ -1,0 +1,1048 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.home-shell {
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.home-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 520px;
+    background:
+        radial-gradient(circle at top left, rgba(46, 125, 50, 0.14), transparent 34%),
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.14), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 247, 250, 0));
+    pointer-events: none;
+    z-index: 0;
+}
+
+.home-shell > * {
+    position: relative;
+    z-index: 1;
+}
+
+.home-hero {
+    border-radius: 32px;
+    overflow: hidden;
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 28px 72px rgba(15, 23, 42, 0.18);
+    background-image:
+        linear-gradient(90deg, rgba(6, 24, 30, 0.72) 0%, rgba(6, 24, 30, 0.5) 34%, rgba(6, 24, 30, 0.08) 67%, rgba(6, 24, 30, 0) 100%),
+        url('{{ url_for('static', filename='images/home-hero.webp') }}');
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #102a43;
+}
+
+.home-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.96fr) minmax(280px, 330px);
+    gap: 1.5rem;
+    min-height: 520px;
+    padding: 42px 40px;
+    align-items: start;
+    background: linear-gradient(126deg, rgba(6, 24, 30, 0.12) 0%, rgba(6, 24, 30, 0.02) 48%, rgba(6, 24, 30, 0) 100%);
+}
+
+.hero-side {
+    display: grid;
+    gap: 1rem;
+    align-self: stretch;
+    align-content: end;
+}
+
+.hero-intro {
+    max-width: 720px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-badge,
+.hero-panel-label,
+.section-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.hero-badge {
+    margin-bottom: 1rem;
+    padding: 0.62rem 0.95rem;
+    color: #f8fafc;
+    background: rgba(6, 24, 30, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hero-intro h1 {
+    color: white;
+    font-size: clamp(2.45rem, 4.6vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    max-width: 12ch;
+}
+
+.hero-description {
+    max-width: 52ch;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: auto;
+}
+
+.hero-actions .btn {
+    min-width: 190px;
+    padding: 0.92rem 1.25rem;
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+.hero-actions .btn-outline-light {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1.35rem;
+}
+
+.hero-fact {
+    padding: 0.95rem 1rem;
+    border-radius: 20px;
+    background: rgba(6, 24, 30, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-fact-value {
+    display: block;
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.hero-fact-label {
+    display: block;
+    margin-top: 0.35rem;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.hero-compass {
+    padding: 1.05rem;
+    border-radius: 20px;
+    color: white;
+    background: rgba(6, 24, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.14);
+}
+
+.hero-panel-label {
+    margin-bottom: 0.85rem;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-compass-title {
+    color: white;
+    font-size: 1.08rem;
+    margin-bottom: 0.35rem;
+}
+
+.hero-compass p {
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+
+.compass-list {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 0.75rem;
+}
+
+.compass-item {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 0.65rem;
+    padding: 0.65rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.compass-icon {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: white;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.compass-copy strong {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.92rem;
+}
+
+.compass-copy span {
+    display: block;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.compass-link {
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.compass-link:hover {
+    color: white;
+    opacity: 0.92;
+}
+
+.home-weather {
+    padding: 1.05rem;
+    border-radius: 20px;
+    color: white;
+    background: rgba(6, 24, 30, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
+}
+
+.home-weather-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    margin-bottom: 0.9rem;
+}
+
+.home-weather-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.home-weather-refresh {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 14px;
+    color: white;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.home-weather-refresh:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.home-weather-place {
+    margin-bottom: 0.35rem;
+    color: white;
+    font-size: 1.18rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.home-weather-observed {
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.home-weather-main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.home-weather-icon {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    color: #fef3c7;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 1.45rem;
+}
+
+.home-weather-temp {
+    display: block;
+    color: white;
+    font-size: 2.15rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.home-weather-condition {
+    display: block;
+    margin-top: 0.25rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9rem;
+}
+
+.home-weather-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.home-weather-stat {
+    min-width: 0;
+    padding: 0.7rem 0.75rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.home-weather-stat span {
+    display: block;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.home-weather-stat strong {
+    display: block;
+    margin-top: 0.25rem;
+    color: white;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.home-weather-message {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.home-section {
+    margin-top: 2.75rem;
+}
+
+.section-header {
+    margin-bottom: 1.35rem;
+}
+
+.section-kicker {
+    margin-bottom: 0.7rem;
+    color: var(--primary);
+}
+
+.section-header h2 {
+    font-size: clamp(1.7rem, 3vw, 2.5rem);
+    margin-bottom: 0.45rem;
+}
+
+.section-header p {
+    max-width: 62ch;
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+.path-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.path-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.path-card,
+.method-card {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 24px;
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.06);
+}
+
+.path-card {
+    display: block;
+    height: 100%;
+    padding: 1.45rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.path-card:hover {
+    transform: translateY(-2px);
+    color: inherit;
+    border-color: rgba(15, 118, 110, 0.24);
+    box-shadow: 0 22px 42px rgba(15, 23, 42, 0.08);
+}
+
+.path-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.path-card-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    color: var(--primary);
+    background: var(--primary-light);
+    font-size: 1.1rem;
+}
+
+.path-card-tag {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.path-card h3 {
+    font-size: 1.12rem;
+    margin-bottom: 0.45rem;
+}
+
+.path-card p {
+    margin-bottom: 0.95rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+.path-link {
+    color: var(--primary);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.method-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.35rem 1.45rem;
+    background: linear-gradient(130deg, rgba(255, 255, 255, 0.98) 0%, rgba(234, 244, 244, 0.95) 100%);
+}
+
+.method-card h3 {
+    margin-bottom: 0.35rem;
+}
+
+.method-card p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+.method-card .btn {
+    white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+    .home-hero {
+        background-position: center top;
+        background-size: cover;
+    }
+
+    .home-hero-grid {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-hero {
+        background-position: 60% top;
+    }
+
+    .home-hero-grid {
+        min-height: auto;
+        padding: 28px 20px;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .hero-actions {
+        margin-top: 1.5rem;
+    }
+
+    .hero-facts,
+    .path-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .method-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-weather-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-weather-main {
+        grid-template-columns: 1fr;
+    }
+
+    .home-weather-icon {
+        width: 48px;
+        height: 48px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-shell">
+    <section class="home-hero mb-4">
+        <div class="home-hero-grid">
+            <div class="hero-intro">
+                <div class="hero-badge">
+                    <i class="fas fa-cloud-sun-rain"></i>
+                    <span>Zambia Climate Portal</span>
+                </div>
+                <h1>Welcome to the Zambia Climate Data Visualization Portal</h1>
+                <p class="hero-description">
+                    Explore rainfall, temperature, drought conditions, and local weather from one place. Start with the national overview, then move into maps, rankings, and detailed records when you need evidence.
+                </p>
+                <div class="hero-actions">
+                    <a href="/overview" class="btn btn-primary btn-lg">
+                        <i class="fas fa-chart-line me-2"></i>Open Overview
+                    </a>
+                    <a href="/interactive-map" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-map-marked-alt me-2"></i>Open the Map
+                    </a>
+                </div>
+                <div class="hero-facts">
+                    <div class="hero-fact">
+                        <span class="hero-fact-value" id="homeCoverageYears">2015-2025</span>
+                        <span class="hero-fact-label">Coverage</span>
+                    </div>
+                    <div class="hero-fact">
+                        <span class="hero-fact-value" id="homeCoverageProvinces">10</span>
+                        <span class="hero-fact-label">Provinces</span>
+                    </div>
+                    <div class="hero-fact">
+                        <span class="hero-fact-value" id="homeCoverageRecords">15,604</span>
+                        <span class="hero-fact-label">Records</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-side">
+                <aside class="home-weather" aria-live="polite">
+                    <div class="home-weather-top">
+                        <div class="home-weather-kicker">
+                            <i class="fas fa-location-crosshairs"></i>
+                            <span>Current Location</span>
+                        </div>
+                        <button class="home-weather-refresh" type="button" id="homeWeatherRefresh" aria-label="Refresh current location weather" title="Refresh current location weather">
+                            <i class="fas fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <div class="home-weather-place" id="homeWeatherPlace">Lusaka, ZM (default)</div>
+                    <div class="home-weather-observed" id="homeWeatherObserved">Loading current conditions. Browser location will replace the default area when available.</div>
+                    <div class="home-weather-main" id="homeWeatherMain">
+                        <div class="home-weather-icon"><i class="fas fa-cloud-sun"></i></div>
+                        <div>
+                            <span class="home-weather-temp" id="homeWeatherTemp">--</span>
+                            <span class="home-weather-condition" id="homeWeatherCondition">Loading live weather</span>
+                        </div>
+                    </div>
+                    <div class="home-weather-grid" id="homeWeatherStats">
+                        <div class="home-weather-stat">
+                            <span>Humidity</span>
+                            <strong id="homeWeatherHumidity">--</strong>
+                        </div>
+                        <div class="home-weather-stat">
+                            <span>Wind</span>
+                            <strong id="homeWeatherWind">--</strong>
+                        </div>
+                        <div class="home-weather-stat">
+                            <span>Clouds</span>
+                            <strong id="homeWeatherClouds">--</strong>
+                        </div>
+                        <div class="home-weather-stat">
+                            <span>Coordinates</span>
+                            <strong id="homeWeatherCoords">--</strong>
+                        </div>
+                    </div>
+                </aside>
+
+                <aside class="hero-compass">
+                    <div class="hero-panel-label">Start Here</div>
+                    <h2 class="hero-compass-title">Where to start</h2>
+                    <p>Choose the view that matches the question you are answering.</p>
+                    <div class="compass-list">
+                        <div class="compass-item">
+                            <div class="compass-icon"><i class="fas fa-chart-pie"></i></div>
+                            <div class="compass-copy">
+                                <strong>Overview</strong>
+                                <span>National patterns, headline indicators, and quick summaries.</span>
+                            </div>
+                        </div>
+                        <div class="compass-item">
+                            <div class="compass-icon"><i class="fas fa-location-dot"></i></div>
+                            <div class="compass-copy">
+                                <strong>Interactive Map</strong>
+                                <span>Province and district comparisons in geographic context.</span>
+                            </div>
+                        </div>
+                        <div class="compass-item">
+                            <div class="compass-icon"><i class="fas fa-table"></i></div>
+                            <div class="compass-copy">
+                                <strong>Data Explorer</strong>
+                                <span>Specific records, filters, and export-ready detail.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/data-explorer" class="compass-link">Go to Data Explorer <i class="fas fa-arrow-right ms-2"></i></a>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-section">
+        <div class="section-header">
+            <span class="section-kicker">Start Here</span>
+            <h2>Choose the view that matches your task</h2>
+            <p>If you are new to the portal, these are the clearest ways to start exploring the data.</p>
+        </div>
+        <div class="path-grid">
+            <a href="/overview" class="path-card">
+                <div class="path-card-top">
+                    <div class="path-card-icon"><i class="fas fa-chart-line"></i></div>
+                    <span class="path-card-tag">Overview</span>
+                </div>
+                <h3>Climate Overview</h3>
+                <p>Start with the broader climate picture, then decide where you want to explore in more detail.</p>
+                <span class="path-link">Open Overview</span>
+            </a>
+            <a href="/interactive-map" class="path-card">
+                <div class="path-card-top">
+                    <div class="path-card-icon"><i class="fas fa-map"></i></div>
+                    <span class="path-card-tag">Location</span>
+                </div>
+                <h3>Interactive Map</h3>
+                <p>Explore climate patterns spatially when location matters more than a high-level summary.</p>
+                <span class="path-link">Open the map</span>
+            </a>
+            <a href="/data-explorer" class="path-card">
+                <div class="path-card-top">
+                    <div class="path-card-icon"><i class="fas fa-filter"></i></div>
+                    <span class="path-card-tag">Records</span>
+                </div>
+                <h3>Data Explorer</h3>
+                <p>Filter specific records when you need raw detail instead of a summary view.</p>
+                <span class="path-link">Open Data Explorer</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="home-section">
+        <div class="method-card">
+            <div>
+                <span class="section-kicker">Methodology</span>
+                <h3>Need information about the data and methods?</h3>
+                <p>Read more about how the portal is structured and what the current dataset includes.</p>
+            </div>
+            <a href="/about" class="btn btn-outline-secondary">
+                <i class="fas fa-book-open me-2"></i>Read the methodology
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const homeNotifier = typeof window.createPageNotifier === 'function'
+    ? window.createPageNotifier('home')
+    : null;
+
+function sendHomeNotification(type, title, message, options = {}) {
+    if (typeof window.notifyApp !== 'function') return;
+    if (homeNotifier) {
+        homeNotifier(type, title, message, {
+            id: options.id,
+            duration: options.duration,
+            sticky: options.sticky,
+            meta: options.meta || 'Home',
+            icon: options.icon
+        });
+        return;
+    }
+
+    window.notifyApp({
+        type,
+        title,
+        message,
+        id: options.id,
+        duration: options.duration,
+        sticky: options.sticky,
+        meta: options.meta || 'Home',
+        icon: options.icon
+    });
+}
+
+async function getHomeSiteSummary() {
+    if (typeof getCachedSiteSummary === 'function') {
+        const viewerCoords = typeof getPreferredViewerCoordinates === 'function'
+            ? await getPreferredViewerCoordinates()
+            : null;
+        return getCachedSiteSummary(viewerCoords);
+    }
+
+    const viewerCoords = typeof getPreferredViewerCoordinates === 'function'
+        ? await getPreferredViewerCoordinates()
+        : null;
+    const params = viewerCoords
+        ? `?${new URLSearchParams({
+            lat: String(viewerCoords.latitude),
+            lon: String(viewerCoords.longitude)
+        }).toString()}`
+        : '';
+    const response = await fetch(`/api/v1/site-summary${params}`);
+    const payload = await response.json();
+    if (!payload.success) {
+        throw new Error(payload.error || 'Failed to load site summary');
+    }
+    return payload.data;
+}
+
+function formatCount(value) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue.toLocaleString() : 'N/A';
+}
+
+function buildYearRangeLabel(years) {
+    const normalizedYears = Array.isArray(years)
+        ? years.map(Number).filter(Number.isFinite).sort((a, b) => a - b)
+        : [];
+
+    if (!normalizedYears.length) return null;
+    const firstYear = normalizedYears[0];
+    const lastYear = normalizedYears[normalizedYears.length - 1];
+    return firstYear === lastYear ? String(firstYear) : `${firstYear}-${lastYear}`;
+}
+
+function updateHomeMetrics(summary) {
+    const yearsLabel = buildYearRangeLabel(summary?.years);
+    const summaryProvinceCount = Number(summary?.province_count);
+    const provinceCount = Number.isFinite(summaryProvinceCount)
+        ? summaryProvinceCount
+        : (Array.isArray(summary?.provinces) ? summary.provinces.length : NaN);
+    const recordCount = Number(summary?.total_records);
+
+    const coverageYearsNode = document.getElementById('homeCoverageYears');
+    const coverageProvincesNode = document.getElementById('homeCoverageProvinces');
+    const coverageRecordsNode = document.getElementById('homeCoverageRecords');
+
+    if (coverageYearsNode && yearsLabel) {
+        coverageYearsNode.textContent = yearsLabel;
+    }
+    if (coverageProvincesNode && Number.isFinite(provinceCount)) {
+        coverageProvincesNode.textContent = formatCount(provinceCount);
+    }
+    if (coverageRecordsNode && Number.isFinite(recordCount)) {
+        coverageRecordsNode.textContent = formatCount(recordCount);
+    }
+}
+
+function formatWeatherNumber(value, decimals = 0) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue.toFixed(decimals) : null;
+}
+
+function formatWeatherText(value, fallback = '--') {
+    const text = String(value || '').trim();
+    return text || fallback;
+}
+
+function getWeatherIconClass(weatherMain) {
+    const normalized = String(weatherMain || '').trim().toLowerCase();
+    if (['rain', 'drizzle', 'thunderstorm'].includes(normalized)) return 'fas fa-cloud-showers-heavy';
+    if (normalized === 'clear') return 'fas fa-sun';
+    if (normalized === 'clouds') return 'fas fa-cloud';
+    if (['mist', 'fog', 'haze', 'smoke', 'dust', 'sand'].includes(normalized)) return 'fas fa-smog';
+    return 'fas fa-cloud-sun';
+}
+
+function getDefaultWeatherCoordinates() {
+    return {
+        latitude: -15.4167,
+        longitude: 28.2833,
+        label: 'Lusaka, ZM'
+    };
+}
+
+const HOME_WEATHER_REFRESH_INTERVAL_MS = 60 * 1000;
+let homeWeatherRefreshTimer = null;
+let homeWeatherRefreshInFlight = null;
+
+function setHomeWeatherLoading(message = 'Finding your area') {
+    const placeNode = document.getElementById('homeWeatherPlace');
+    const observedNode = document.getElementById('homeWeatherObserved');
+    const conditionNode = document.getElementById('homeWeatherCondition');
+    const tempNode = document.getElementById('homeWeatherTemp');
+
+    if (placeNode) placeNode.textContent = message;
+    if (observedNode) observedNode.textContent = 'Latest local weather will appear here.';
+    if (conditionNode) conditionNode.textContent = 'Waiting for location';
+    if (tempNode) tempNode.textContent = '--';
+}
+
+function renderHomeLocationFromCoords(coords) {
+    const normalized = coords && typeof normalizeViewerCoordinates === 'function'
+        ? normalizeViewerCoordinates(coords)
+        : coords;
+    if (!normalized) return;
+
+    const placeNode = document.getElementById('homeWeatherPlace');
+    const observedNode = document.getElementById('homeWeatherObserved');
+    const coordsNode = document.getElementById('homeWeatherCoords');
+    const latitude = formatWeatherNumber(normalized.latitude, 3);
+    const longitude = formatWeatherNumber(normalized.longitude, 3);
+
+    if (placeNode && latitude && longitude) {
+        placeNode.textContent = `Your location (${latitude}, ${longitude})`;
+    }
+    if (observedNode) {
+        observedNode.textContent = 'Loading current weather for this location.';
+    }
+    if (coordsNode && latitude && longitude) {
+        coordsNode.textContent = `${latitude}, ${longitude}`;
+    }
+}
+
+function setHomeWeatherUnavailable(message) {
+    const placeNode = document.getElementById('homeWeatherPlace');
+    const observedNode = document.getElementById('homeWeatherObserved');
+    const conditionNode = document.getElementById('homeWeatherCondition');
+    const tempNode = document.getElementById('homeWeatherTemp');
+    const humidityNode = document.getElementById('homeWeatherHumidity');
+    const windNode = document.getElementById('homeWeatherWind');
+    const cloudsNode = document.getElementById('homeWeatherClouds');
+    const coordsNode = document.getElementById('homeWeatherCoords');
+
+    if (placeNode) placeNode.textContent = 'Current location weather';
+    if (observedNode) observedNode.textContent = message;
+    if (conditionNode) conditionNode.textContent = 'Unavailable';
+    if (tempNode) tempNode.textContent = '--';
+    if (humidityNode) humidityNode.textContent = '--';
+    if (windNode) windNode.textContent = '--';
+    if (cloudsNode) cloudsNode.textContent = '--';
+    if (coordsNode) coordsNode.textContent = '--';
+}
+
+function getHomeLocationUnavailableMessage(fallback = 'Current location weather could not be loaded right now.') {
+    const status = typeof window.getViewerLocationStatus === 'function'
+        ? window.getViewerLocationStatus()
+        : null;
+
+    if (!status || !status.code) return fallback;
+
+    const messages = {
+        'insecure-context': 'Open the portal from localhost or HTTPS to allow current location access.',
+        'unsupported': 'This browser does not support current location access.',
+        'permission-denied': 'Allow location access in your browser, then refresh current weather.',
+        'position-unavailable': 'The browser could not determine your current location.',
+        'timeout': 'Current location lookup timed out. Try refreshing current weather.',
+        'cached-after-denied': 'Using the last saved location because browser location access was denied.',
+        'cached': 'Using the last saved location while current location is unavailable.'
+    };
+
+    return messages[status.code] || status.message || fallback;
+}
+
+function renderHomeWeather(liveWeather) {
+    if (!liveWeather) {
+        setHomeWeatherUnavailable(getHomeLocationUnavailableMessage('Allow location access to show current conditions.'));
+        return;
+    }
+
+    const placeNode = document.getElementById('homeWeatherPlace');
+    const observedNode = document.getElementById('homeWeatherObserved');
+    const iconNode = document.querySelector('.home-weather-icon i');
+    const tempNode = document.getElementById('homeWeatherTemp');
+    const conditionNode = document.getElementById('homeWeatherCondition');
+    const humidityNode = document.getElementById('homeWeatherHumidity');
+    const windNode = document.getElementById('homeWeatherWind');
+    const cloudsNode = document.getElementById('homeWeatherClouds');
+    const coordsNode = document.getElementById('homeWeatherCoords');
+
+    const temperature = formatWeatherNumber(liveWeather.temperature_c, 1);
+    const feelsLike = formatWeatherNumber(liveWeather.feels_like_c, 1);
+    const humidity = formatWeatherNumber(liveWeather.humidity_pct, 0);
+    const wind = formatWeatherNumber(liveWeather.wind_speed_mps, 1);
+    const clouds = formatWeatherNumber(liveWeather.cloudiness_pct, 0);
+    const coords = liveWeather.coordinates || {};
+    const latitude = formatWeatherNumber(coords.latitude, 3);
+    const longitude = formatWeatherNumber(coords.longitude, 3);
+    const condition = formatWeatherText(liveWeather.weather_description || liveWeather.weather_main, 'Current conditions');
+
+    if (placeNode) placeNode.textContent = formatWeatherText(liveWeather.location_name, 'Your current area');
+    if (observedNode) observedNode.textContent = formatWeatherText(liveWeather.observed_at_label, 'Latest weather update');
+    if (iconNode) iconNode.className = getWeatherIconClass(liveWeather.weather_main);
+    if (tempNode) tempNode.textContent = temperature ? `${temperature} C` : '--';
+    if (conditionNode) {
+        conditionNode.textContent = feelsLike
+            ? `${condition}; feels like ${feelsLike} C`
+            : condition;
+    }
+    if (humidityNode) humidityNode.textContent = humidity ? `${humidity}%` : '--';
+    if (windNode) windNode.textContent = wind ? `${wind} m/s` : '--';
+    if (cloudsNode) cloudsNode.textContent = clouds ? `${clouds}%` : '--';
+    if (coordsNode) coordsNode.textContent = latitude && longitude ? `${latitude}, ${longitude}` : '--';
+}
+
+async function refreshHomeWeather(options = {}) {
+    if (homeWeatherRefreshInFlight) {
+        return homeWeatherRefreshInFlight;
+    }
+
+    setHomeWeatherLoading('Refreshing your area');
+    homeWeatherRefreshInFlight = (async () => {
+        const forceRefresh = Boolean(options && options.forceRefresh);
+        let usedDefaultLocation = false;
+        let liveWeather = null;
+        if (typeof getPreferredViewerCoordinates === 'function' && typeof getCachedLiveWeather === 'function') {
+            const coords = await getPreferredViewerCoordinates({ forceRefresh });
+            renderHomeLocationFromCoords(coords);
+            if (coords) {
+                liveWeather = await getCachedLiveWeather(coords, { forceRefresh });
+            } else {
+                const defaultLocation = getDefaultWeatherCoordinates();
+                usedDefaultLocation = true;
+                liveWeather = await getCachedLiveWeather(defaultLocation, { forceRefresh });
+            }
+        } else if (typeof window.getLiveWeatherForViewer === 'function') {
+            liveWeather = await window.getLiveWeatherForViewer({ forceRefresh });
+        }
+        if (usedDefaultLocation && liveWeather) {
+            liveWeather = {
+                ...liveWeather,
+                location_name: `${liveWeather.location_name || getDefaultWeatherCoordinates().label} (default)`,
+                observed_at_label: liveWeather.observed_at_label || 'Latest weather update'
+            };
+        }
+        renderHomeWeather(liveWeather);
+    })();
+
+    try {
+        return await homeWeatherRefreshInFlight;
+    } catch (error) {
+        console.error('Home weather refresh failed:', error);
+        setHomeWeatherUnavailable(getHomeLocationUnavailableMessage());
+    } finally {
+        homeWeatherRefreshInFlight = null;
+    }
+}
+
+function startHomeWeatherAutoRefresh() {
+    if (homeWeatherRefreshTimer) {
+        window.clearInterval(homeWeatherRefreshTimer);
+    }
+
+    homeWeatherRefreshTimer = window.setInterval(() => {
+        if (document.hidden) return;
+        refreshHomeWeather({ forceRefresh: true });
+    }, HOME_WEATHER_REFRESH_INTERVAL_MS);
+}
+
+async function loadHomepageSummary() {
+    refreshHomeWeather();
+
+    try {
+        const summary = await getHomeSiteSummary();
+        updateHomeMetrics(summary);
+        if (summary?.live_weather) {
+            renderHomeWeather(summary.live_weather);
+        }
+    } catch (error) {
+        console.error('Homepage summary failed to refresh:', error);
+        sendHomeNotification('warning', 'Homepage summary unavailable', 'The homepage could not load the latest dataset summary right now.', {
+            id: 'home-summary-error',
+            duration: 5000
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const refreshButton = document.getElementById('homeWeatherRefresh');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', () => refreshHomeWeather({ forceRefresh: true }));
+    }
+
+    window.addEventListener('liveWeatherUpdated', (event) => {
+        if (event.detail) {
+            renderHomeWeather(event.detail);
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            refreshHomeWeather({ forceRefresh: true });
+        }
+    });
+
+    loadHomepageSummary();
+    startHomeWeatherAutoRefresh();
+});
+</script>
+{% endblock %}

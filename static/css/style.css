@@ -1,0 +1,1635 @@
+/* ========================================
+   ZAMBIA CLIMATE PORTAL - COMPLETE STYLESHEET
+   Version: 2.0 | National Climate Intelligence Platform
+   ======================================== */
+
+/* ========================================
+   1. CSS VARIABLES (Root Variables)
+   ======================================== */
+:root {
+    /* Primary Colors - ZMD-inspired palette */
+    --primary: #0F766E;
+    --primary-dark: #102A43;
+    --primary-light: #EAF4F4;
+    --primary-soft: #D6ECEA;
+    --primary-gradient: linear-gradient(135deg, #102A43 0%, #0F766E 58%, #2E7D32 100%);
+    
+    /* Secondary Colors */
+    --secondary: #102A43;
+    --secondary-light: #1F3C57;
+    --secondary-dark: #0B2239;
+    
+    /* Accent Colors */
+    --accent-green: #2E7D32;
+    --accent-blue: #2B6CB0;
+    --accent-orange: #2B8A78;
+    --accent-red: #C62828;
+    --accent-yellow: #80B918;
+    --accent-teal: #0F766E;
+    --accent-purple: #3F647F;
+    
+    /* Neutrals */
+    --text-dark: #263238;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --border-light: #e2e8f0;
+    --border-medium: #cbd5e1;
+    --border-dark: #94a3b8;
+    --bg-light: #F5F7FA;
+    --bg-white: #ffffff;
+    --bg-gray: #f1f5f9;
+    --bg-dark: #102A43;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: all 0.15s ease;
+    --transition-normal: all 0.25s ease;
+    --transition-slow: all 0.4s ease;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+}
+
+/* ========================================
+   2. BASE STYLES
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.5;
+    font-size: 0.92rem;
+    scroll-behavior: smooth;
+}
+
+/* ========================================
+   3. TYPOGRAPHY
+   ======================================== */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--secondary);
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+h4 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+h5 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+h6 {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* ========================================
+   4. CONTAINER & LAYOUT
+   ======================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+main {
+    min-height: calc(100vh - 200px);
+    padding: 1.5rem 0;
+}
+
+/* ========================================
+   5. NAVIGATION BAR
+   ======================================== */
+.navbar {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+    box-shadow: var(--shadow-md);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.3px;
+    color: white !important;
+}
+
+.navbar-brand i {
+    font-size: 1.3rem;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.navbar .nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white !important;
+}
+
+.navbar-toggler {
+    border: none;
+    color: white;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* ========================================
+   6. FILTER BAR
+   ======================================== */
+.filter-bar {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 72px;
+    z-index: 99;
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-bar .form-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.filter-bar .form-select {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-white);
+    transition: var(--transition-fast);
+}
+
+.filter-bar .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26, 122, 58, 0.1);
+    outline: none;
+}
+
+.filter-bar .btn-primary {
+    background: var(--primary);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    transition: var(--transition-fast);
+}
+
+.filter-bar .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   7. HERO SECTION (HOME PAGE)
+   ======================================== */
+/* Hero Section with Background Image */
+.hero-official {
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.hero-official-overlay {
+    padding: 80px 60px;
+    display: flex;
+    align-items: center;
+    min-height: 500px;
+}
+
+.hero-official-content {
+    max-width: 700px;
+}
+
+@media (max-width: 768px) {
+    .hero-official-overlay {
+        padding: 40px 24px;
+        min-height: 400px;
+    }
+    
+    .hero-official-content h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* ========================================
+   8. SECTION HEADERS
+   ======================================== */
+.section-header {
+    margin-bottom: var(--spacing-2xl);
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 8px;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   9. CLIMATE WATCH CARDS
+   ======================================== */
+.climate-watch {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.watch-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    display: flex;
+    gap: 18px;
+    transition: var(--transition-normal);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+}
+
+.watch-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.watch-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.watch-critical .watch-icon {
+    background: #fef2f2;
+    color: var(--accent-red);
+}
+
+.watch-warning .watch-icon {
+    background: #fffbeb;
+    color: var(--accent-orange);
+}
+
+.watch-info .watch-icon {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.watch-success .watch-icon {
+    background: #f0fdf4;
+    color: var(--accent-green);
+}
+
+.watch-content h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.watch-content p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.watch-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    display: inline-block;
+}
+
+.watch-critical .watch-status {
+    background: #fef2f2;
+    color: var(--accent-red);
+}
+
+.watch-warning .watch-status {
+    background: #fffbeb;
+    color: var(--accent-orange);
+}
+
+.watch-info .watch-status {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.watch-success .watch-status {
+    background: #f0fdf4;
+    color: var(--accent-green);
+}
+
+/* ========================================
+   10. STATISTICS STRIP
+   ======================================== */
+.stats-official {
+    background: var(--primary-gradient);
+    border-radius: var(--radius-xl);
+    padding: 40px 20px;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.stats-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.stat-official-item {
+    text-align: center;
+    color: white;
+}
+
+.stat-official-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(255,255,255,0.15);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.5rem;
+}
+
+.stat-official-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.stat-official-label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================
+   11. STAT CARDS (DASHBOARD)
+   ======================================== */
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: var(--transition-normal);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+    opacity: 0;
+    transition: var(--transition-fast);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--secondary);
+    line-height: 1.2;
+    margin-bottom: 0;
+}
+
+.stat-unit {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+/* ========================================
+   12. CHART CARDS
+   ======================================== */
+.chart-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: var(--transition-normal);
+    height: 100%;
+}
+
+.chart-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.chart-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chart-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--secondary);
+    margin-bottom: 0.25rem;
+}
+
+.chart-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.chart-container {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
+/* ========================================
+   13. ALERT PANEL
+   ======================================== */
+.alert-panel {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-lg);
+}
+
+.alert-header {
+    background: var(--bg-gray);
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--secondary);
+}
+
+.alert-count {
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-full);
+}
+
+.alert-body {
+    padding: 1rem 1.25rem;
+}
+
+.alert-item {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    transition: var(--transition-fast);
+}
+
+.alert-item:last-child {
+    margin-bottom: 0;
+}
+
+.alert-item.alert-critical {
+    background: #fef2f2;
+    border-left: 3px solid var(--accent-red);
+    color: #991b1b;
+}
+
+.alert-item.alert-warning {
+    background: #fffbeb;
+    border-left: 3px solid var(--accent-yellow);
+    color: #92400e;
+}
+
+.alert-item.alert-success {
+    background: #f0fdf4;
+    border-left: 3px solid var(--accent-green);
+    color: #166534;
+}
+
+.alert-item.alert-info {
+    background: #eff6ff;
+    border-left: 3px solid var(--accent-blue);
+    color: #1e40af;
+}
+
+/* ========================================
+   14. RANKINGS SECTION
+   ======================================== */
+.rankings-section {
+    margin-top: var(--spacing-md);
+}
+
+.ranking-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-fast);
+    height: 100%;
+}
+
+.ranking-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.ranking-header {
+    background: var(--bg-gray);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--secondary);
+}
+
+.ranking-list {
+    padding: 0.25rem 0;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+    transition: var(--transition-fast);
+}
+
+.ranking-item:hover {
+    background: var(--bg-gray);
+}
+
+.ranking-rank {
+    width: 28px;
+    height: 28px;
+    background: var(--bg-gray);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.ranking-item.rank-1 .ranking-rank {
+    background: linear-gradient(135deg, #ffd700, #f59e0b);
+    color: white;
+}
+
+.ranking-item.rank-2 .ranking-rank {
+    background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+    color: white;
+}
+
+.ranking-item.rank-3 .ranking-rank {
+    background: linear-gradient(135deg, #fdba74, #ea580c);
+    color: white;
+}
+
+.ranking-name {
+    flex: 1;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.ranking-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* ========================================
+   15. SERVICE CARDS (HOME PAGE)
+   ======================================== */
+.service-card-link {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+.service-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    text-align: center;
+    transition: var(--transition-normal);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.service-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-light) 0%, #d4edda 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 1.8rem;
+    color: var(--primary);
+}
+
+.service-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--secondary);
+}
+
+.service-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.service-action {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* ========================================
+   16. TOOL CARDS
+   ======================================== */
+.tool-card-official {
+    background: var(--bg-white);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    height: 100%;
+}
+
+.tool-card-official:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.tool-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-gray);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.tool-card-official h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.tool-card-official p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.tool-link {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.tool-link:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   17. PORTAL INFO CARD
+   ======================================== */
+.portal-info-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #eef7f0 100%);
+    border-radius: var(--radius-xl);
+    padding: 32px 40px;
+    border: 1px solid var(--border-light);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.portal-info-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.portal-info-card p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ========================================
+   18. UPDATE CARDS
+   ======================================== */
+.update-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--border-light);
+    transition: var(--transition-normal);
+    height: 100%;
+}
+
+.update-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.update-card h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.update-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.update-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+/* ========================================
+   19. DATA FOOTER
+   ======================================== */
+.data-footer {
+    border-top: 1px solid var(--border-light);
+    padding-top: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+/* ========================================
+   20. BUTTONS
+   ======================================== */
+.btn {
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: var(--transition-fast);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--border-medium);
+    color: var(--text-muted);
+}
+
+.btn-outline-secondary:hover {
+    background: var(--bg-gray);
+    border-color: var(--text-muted);
+    color: var(--text-dark);
+}
+
+.btn-success {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-success:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* ========================================
+   21. BADGES
+   ======================================== */
+.badge {
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.badge.bg-success {
+    background: var(--primary) !important;
+}
+
+.badge.bg-info {
+    background: var(--accent-blue) !important;
+    color: white !important;
+}
+
+/* ========================================
+   22. FOOTER
+   ======================================== */
+footer {
+    background: var(--secondary);
+    color: var(--text-light);
+    margin-top: var(--spacing-3xl);
+    padding: var(--spacing-2xl) 0;
+}
+
+footer h5 {
+    color: white;
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+}
+
+footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer li {
+    margin-bottom: var(--spacing-sm);
+}
+
+footer a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+footer a:hover {
+    color: white;
+}
+
+footer hr {
+    border-color: rgba(255,255,255,0.1);
+    margin: var(--spacing-lg) 0;
+}
+
+/* ========================================
+   23. LOADING STATES
+   ======================================== */
+.spinner-border {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-width: 2px;
+}
+
+/* ========================================
+   24. ANIMATIONS
+   ======================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.stat-card, .chart-card, .ranking-card, .service-card, .tool-card-official {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   25. UTILITY CLASSES
+   ======================================== */
+.text-primary-custom {
+    color: var(--primary);
+}
+
+.bg-primary-soft {
+    background: var(--primary-light);
+}
+
+.bg-gray {
+    background: var(--bg-gray);
+}
+
+.rounded-xl {
+    border-radius: var(--radius-xl);
+}
+
+.shadow-sm-custom {
+    box-shadow: var(--shadow-sm);
+}
+
+.shadow-md-custom {
+    box-shadow: var(--shadow-md);
+}
+
+.shadow-lg-custom {
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   26. RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1200px) {
+    .stats-grid, .charts-grid, .rankings-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hero-official h1 {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-official-overlay {
+        padding: 50px 40px;
+    }
+    
+    .hero-official h1 {
+        font-size: 2.5rem;
+    }
+    
+    .stat-official-number {
+        font-size: 1.8rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: var(--spacing-md);
+        padding-right: var(--spacing-md);
+    }
+    
+    .hero-official-overlay {
+        padding: 40px 24px;
+    }
+    
+    .hero-official h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-description {
+        font-size: 0.95rem;
+    }
+    
+    .hero-buttons .btn-lg {
+        padding: 8px 20px;
+        font-size: 0.85rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.4rem;
+    }
+    
+    .stat-official-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+    
+    .stat-official-number {
+        font-size: 1.4rem;
+    }
+    
+    .portal-info-card {
+        padding: 24px;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .chart-container {
+        height: 220px;
+    }
+    
+    .filter-bar {
+        top: 56px;
+    }
+    
+    .stats-grid, .charts-grid, .rankings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-official h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-badge {
+        font-size: 0.7rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .chart-card {
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   27. PRINT STYLES
+   ======================================== */
+@media print {
+    .navbar, .filter-bar, footer, .hero-buttons, .btn {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .chart-card, .stat-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+/* ========================================
+   NEWS TICKER / SCROLLING NOTIFICATIONS
+   ======================================== */
+.ticker-container {
+    background: linear-gradient(90deg, #102a43 0%, #16324a 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    z-index: 99;
+}
+
+.ticker-container-fixed {
+    position: fixed;
+    left: 94px;
+    right: 0;
+    bottom: 0;
+    border-bottom: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 1080;
+    box-shadow: 0 -8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.ticker-label {
+    background: rgba(15, 118, 110, 0.96);
+    color: white;
+    padding: 7px 16px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    z-index: 2;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+}
+
+.ticker-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 38px;
+}
+
+.ticker-content {
+    position: absolute;
+    white-space: nowrap;
+    animation: scrollTicker var(--ticker-duration, 120s) linear infinite;
+    display: inline-block;
+    line-height: 38px;
+    min-width: 100%;
+}
+
+.ticker-content:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    display: inline-block;
+    padding: 0 22px;
+    color: rgba(255,255,255,0.92);
+    font-size: 0.78rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.ticker-item:not(:last-child)::after {
+    content: "•";
+    margin-left: 30px;
+    color: rgba(255,255,255,0.55);
+}
+
+.ticker-item i {
+    margin-right: 6px;
+}
+
+/* Normalize separator rendering on Windows-encoded checkouts */
+.ticker-item:not(:last-child)::after {
+    content: "•";
+}
+
+/* Scrolling Animation */
+@keyframes scrollTicker {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Pause on hover */
+.ticker-wrapper:hover .ticker-content {
+    animation-play-state: paused;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ticker-label {
+        padding: 6px 12px;
+        font-size: 0.65rem;
+    }
+    
+    .ticker-item {
+        font-size: 0.7rem;
+        padding: 0 15px;
+    }
+    
+    .ticker-wrapper {
+        height: 36px;
+    }
+    
+    .ticker-content {
+        animation-duration: var(--ticker-duration-mobile, 140s);
+        line-height: 36px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ticker-content {
+        animation: none;
+        position: static;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ticker-wrapper {
+        height: auto;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media (min-width: 992px) {
+    .app-shell.sidebar-expanded ~ .ticker-container-fixed,
+    .app-shell.sidebar-expanded + .ticker-container-fixed {
+        left: 292px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .ticker-container-fixed {
+        left: 0;
+    }
+}
+
+/* ========================================
+   GLOBAL RESPONSIVE SAFETY LAYER
+   Keeps page templates usable across phone, tablet, laptop, and desktop widths.
+   ======================================== */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+.container {
+    width: min(100% - 2rem, 1200px);
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.card,
+.chart-card,
+.stat-card,
+.ranking-card,
+.alert-panel,
+.portal-info-card,
+.update-card,
+.service-card,
+.tool-card-official {
+    min-width: 0;
+}
+
+.chart-header,
+.alert-header,
+.explorer-panel-title,
+.overview-top-bar,
+.panel-header,
+.toolbar-row {
+    min-width: 0;
+}
+
+.chart-title,
+.chart-subtitle,
+.stat-value,
+.ranking-name,
+.ranking-value {
+    overflow-wrap: anywhere;
+}
+
+.chart-container,
+.overview-chart-wrap,
+.explorer-chart-wrap,
+.compare-chart-frame,
+.mc-chart-wrap {
+    min-width: 0;
+}
+
+.table-responsive,
+.table-shell,
+.compare-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table,
+.table-shell table,
+.compare-table {
+    min-width: 720px;
+}
+
+.btn,
+.form-select,
+.form-control {
+    min-width: 0;
+}
+
+.filter-bar,
+.toolbar-left,
+.filter-actions,
+.hero-actions,
+.overview-nav-buttons,
+.compare-actions,
+.site-footer-metrics {
+    min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+    main {
+        padding-top: 4.4rem;
+    }
+
+    .container {
+        width: min(100% - 1.5rem, 1200px);
+    }
+
+    .chart-export-toolbar,
+    .chart-export-fallback {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    main {
+        padding-top: 4rem;
+        padding-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: clamp(1.45rem, 8vw, 2rem);
+        line-height: 1.12;
+    }
+
+    h2 {
+        font-size: clamp(1.25rem, 6vw, 1.65rem);
+        line-height: 1.18;
+    }
+
+    h3 {
+        font-size: clamp(1.05rem, 5vw, 1.35rem);
+    }
+
+    .container {
+        width: min(100% - 1rem, 1200px);
+    }
+
+    .chart-card,
+    .stat-card,
+    .alert-panel,
+    .portal-info-card,
+    .update-card,
+    .service-card,
+    .tool-card-official {
+        border-radius: 14px;
+        padding: 1rem;
+    }
+
+    .watch-card,
+    .ranking-item,
+    .alert-header,
+    .chart-header {
+        align-items: flex-start;
+    }
+
+    .watch-card {
+        flex-direction: column;
+    }
+
+    .chart-header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .explorer-panel-title,
+    .panel-header,
+    .overview-footer-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .explorer-panel-title .btn,
+    .filter-actions,
+    .filter-actions .btn,
+    .toolbar-left,
+    .toolbar-left .metric-btn {
+        width: 100%;
+    }
+
+    .toolbar-left .metric-btn {
+        justify-content: center;
+    }
+
+    .chart-container {
+        height: clamp(240px, 72vw, 320px);
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .filter-bar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .filter-bar .row > [class*="col-"] {
+        margin-bottom: 0.75rem;
+    }
+
+    .ticker-label {
+        max-width: 42vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container {
+        width: calc(100% - 0.75rem);
+    }
+
+    main.py-4 {
+        padding-top: 3.85rem !important;
+    }
+
+    .app-notification-stack {
+        top: 0.7rem;
+    }
+
+    .stats-official {
+        border-radius: 14px;
+        padding: 1.2rem 0.8rem;
+    }
+
+    .stat-official-number {
+        font-size: 1.25rem;
+    }
+
+    .table-responsive table,
+    .table-shell table,
+    .compare-table {
+        min-width: 640px;
+    }
+}

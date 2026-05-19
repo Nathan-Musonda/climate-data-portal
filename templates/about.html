@@ -1,0 +1,744 @@
+{% extends "base.html" %}
+
+{% block title %}About - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .about-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background:
+            radial-gradient(circle at top right, rgba(21, 101, 192, 0.12), transparent 28%),
+            linear-gradient(135deg, #0f2f1b 0%, #1f5a24 52%, #2e7d32 100%);
+        color: white;
+        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(90deg, rgba(9, 27, 16, 0.82) 0%, rgba(18, 48, 24, 0.7) 42%, rgba(18, 48, 24, 0.38) 100%),
+            linear-gradient(180deg, rgba(10, 32, 17, 0.18) 0%, rgba(10, 32, 17, 0.52) 100%);
+        z-index: 1;
+    }
+
+    .about-hero::after {
+        content: "";
+        position: absolute;
+        right: -70px;
+        top: -70px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        z-index: 2;
+    }
+
+    .about-hero-media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 3;
+    }
+
+    .about-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.45rem 0.9rem;
+        margin-bottom: 1rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .about-hero h1 {
+        color: white;
+        font-size: 2.35rem;
+        line-height: 1.15;
+        margin-bottom: 0.85rem;
+        max-width: 760px;
+    }
+
+    .about-hero p {
+        max-width: 780px;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.84);
+        margin-bottom: 1.35rem;
+    }
+
+    .about-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .about-stat {
+        position: relative;
+        z-index: 1;
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(6px);
+    }
+
+    .about-stat-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.72);
+        margin-bottom: 0.4rem;
+        font-weight: 700;
+    }
+
+    .about-stat-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 0.2rem;
+    }
+
+    .about-stat-note {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.76);
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.95fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .about-panel {
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: 22px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .about-panel + .about-panel {
+        margin-top: 1.25rem;
+    }
+
+    .about-section-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .about-section-icon {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .about-section-head h2,
+    .about-section-head h3,
+    .about-section-head h4 {
+        margin-bottom: 0.2rem;
+    }
+
+    .about-section-head p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+    }
+
+    .about-prose {
+        color: var(--text-muted);
+        line-height: 1.7;
+    }
+
+    .about-prose p:last-child {
+        margin-bottom: 0;
+    }
+
+    .about-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .about-team-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .about-person-card {
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid var(--border-light);
+        background: #ffffff;
+    }
+
+    .about-person-photo {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        display: block;
+        background: #e2e8f0;
+    }
+
+    .about-person-body {
+        padding: 1rem 1.05rem;
+    }
+
+    .about-person-role {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+    }
+
+    .about-person-body h5 {
+        margin-bottom: 0.35rem;
+    }
+
+    .about-person-body p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .about-logo-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .about-logo-card {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 1rem;
+        border-radius: 18px;
+        border: 1px solid var(--border-light);
+        background: #f8fafc;
+    }
+
+    .about-logo-mark {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        background: white;
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .about-logo-mark img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .about-logo-card h5 {
+        margin-bottom: 0.25rem;
+        font-size: 0.95rem;
+    }
+
+    .about-logo-card p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.86rem;
+    }
+
+    .about-feature {
+        padding: 1rem 1.05rem;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid var(--border-light);
+    }
+
+    .about-feature h5 {
+        margin-bottom: 0.55rem;
+        font-size: 0.98rem;
+    }
+
+    .about-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .about-list li {
+        position: relative;
+        padding-left: 1.2rem;
+        margin-bottom: 0.7rem;
+        color: var(--text-muted);
+    }
+
+    .about-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .about-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.62rem;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
+
+    .about-steps {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .about-step {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 0.9rem;
+        align-items: start;
+        padding: 1rem;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
+        border: 1px solid var(--border-light);
+    }
+
+    .about-step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .about-step p {
+        margin: 0.2rem 0 0;
+        color: var(--text-muted);
+    }
+
+    .about-side-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .about-side-list li {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        gap: 0.8rem;
+        align-items: start;
+        color: var(--text-muted);
+    }
+
+    .about-side-list i {
+        margin-top: 0.2rem;
+        color: var(--primary);
+    }
+
+    .about-tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+    }
+
+    .about-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 0.8rem;
+        border-radius: 999px;
+        background: #f1f5f9;
+        border: 1px solid var(--border-light);
+        color: var(--secondary);
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 991.98px) {
+        .about-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .about-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .about-hero {
+            padding: 1.6rem;
+        }
+
+        .about-hero h1 {
+            font-size: 1.8rem;
+        }
+
+        .about-stats,
+        .about-feature-grid,
+        .about-team-grid,
+        .about-logo-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .about-panel {
+            padding: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% set coverage_label = (about_start_year ~ " - " ~ about_end_year) if about_start_year and about_end_year else "Coverage updating" %}
+
+<div class="about-shell">
+    <section class="about-hero">
+        <video class="about-hero-media" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='videos/about-agriculture.mp4') }}" type="video/mp4">
+        </video>
+        <div class="about-hero-content">
+            <div class="about-kicker">
+                <i class="fas fa-circle-info"></i>
+                About The Portal
+            </div>
+            <h1>Zambia climate information, presented in a cleaner way for planning, research, and public understanding.</h1>
+            <p>
+                The portal brings rainfall, temperature, and drought conditions into one place so users can move from raw records to clear interpretation. It is designed to support evidence-based decisions without forcing people to work through fragmented datasets or specialist tools.
+            </p>
+
+            <div class="about-stats">
+                <div class="about-stat">
+                    <div class="about-stat-label">Records</div>
+                    <div class="about-stat-value">{{ "{:,}".format(about_total_records or 0) }}</div>
+                    <div class="about-stat-note">Climate observations in the database.</div>
+                </div>
+                <div class="about-stat">
+                    <div class="about-stat-label">Coverage</div>
+                    <div class="about-stat-value">{{ coverage_label }}</div>
+                    <div class="about-stat-note">Current year range in the portal.</div>
+                </div>
+                <div class="about-stat">
+                    <div class="about-stat-label">Geography</div>
+                    <div class="about-stat-value">{{ about_province_count }} provinces</div>
+                    <div class="about-stat-note">{{ about_district_count }} districts available.</div>
+                </div>
+                <div class="about-stat">
+                    <div class="about-stat-label">Frequency</div>
+                    <div class="about-stat-value">Monthly</div>
+                    <div class="about-stat-note">{{ about_month_count or 0 }} months represented.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="about-grid">
+        <div>
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h2>Purpose</h2>
+                        <p>Why this platform exists and the problem it addresses.</p>
+                    </div>
+                </div>
+                <div class="about-prose">
+                    <p>
+                        Climate records are valuable, but they are often difficult to interpret when they are split across files, indicators, and locations. This platform brings Zambia-focused climate information into one navigable environment so patterns can be explored more quickly and more consistently.
+                    </p>
+                    <p>
+                        It is built to support researchers, policymakers, practitioners, and the wider public with a practical view of rainfall variability, temperature patterns, and drought stress across Zambia's provinces and districts.
+                    </p>
+                </div>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h3>What the portal includes</h3>
+                        <p>The main indicator groups available across the platform.</p>
+                    </div>
+                </div>
+                <div class="about-feature-grid">
+                    <div class="about-feature">
+                        <h5>Rainfall</h5>
+                        <ul class="about-list">
+                            <li>Annual and monthly rainfall totals</li>
+                            <li>Wet and dry year comparisons</li>
+                            <li>Province-level rainfall differences</li>
+                        </ul>
+                    </div>
+                    <div class="about-feature">
+                        <h5>Temperature</h5>
+                        <ul class="about-list">
+                            <li>Daytime and night-time temperature trends</li>
+                            <li>District-level heat comparisons</li>
+                            <li>Heatwave day frequency over time</li>
+                        </ul>
+                    </div>
+                    <div class="about-feature">
+                        <h5>Drought Conditions</h5>
+                        <ul class="about-list">
+                            <li>Drought severity classification</li>
+                            <li>Ground water level tracking</li>
+                            <li>Province drought comparison</li>
+                        </ul>
+                    </div>
+                    <div class="about-feature">
+                        <h5>Exploration Tools</h5>
+                        <ul class="about-list">
+                            <li>Dashboards and trend charts</li>
+                            <li>Rankings and district comparisons</li>
+                            <li>District-level map and data exploration</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <div>
+                        <h3>Project Team</h3>
+                    </div>
+                </div>
+                <div class="about-team-grid">
+                    <div class="about-person-card">
+                        <img
+                            class="about-person-photo"
+                            src="https://ui-avatars.com/api/?name=Nathan+Musonda&background=1f5a24&color=ffffff&size=512"
+                            alt="Portrait of Nathan Musonda"
+                        >
+                        <div class="about-person-body">
+                            <div class="about-person-role">Project Author</div>
+                            <h5>Nathan Musonda</h5>
+                            <p>Researcher and developer of the Zambia Climate Data Visualization Portal.</p>
+                        </div>
+                    </div>
+                    <div class="about-person-card">
+                        <img
+                            class="about-person-photo"
+                            src="https://ui-avatars.com/api/?name=Mrs+Mulwanda+Maris&background=1565c0&color=ffffff&size=512"
+                            alt="Portrait of Mrs Mulwanda Maris"
+                        >
+                        <div class="about-person-body">
+                            <div class="about-person-role">Supervisor</div>
+                            <h5>Mrs Mulwanda Maris</h5>
+                            <p>Academic supervisor guiding the project direction, review, and research quality.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div>
+                        <h3>Institutional Partners</h3>
+                        <p>Online placeholder logos for the institutions behind the project and future partnerships.</p>
+                    </div>
+                </div>
+                <div class="about-logo-grid">
+                    <div class="about-logo-card">
+                        <div class="about-logo-mark">
+                            <img src="https://www.google.com/s2/favicons?domain=mu.ac.zm&sz=128" alt="Mulungushi University placeholder logo">
+                        </div>
+                        <div>
+                            <h5>Mulungushi University</h5>
+                            <p>Academic institution supporting the project context and research environment.</p>
+                        </div>
+                    </div>
+                    <div class="about-logo-card">
+                        <div class="about-logo-mark">
+                            <img src="https://www.google.com/s2/favicons?domain=zmd.gov.zm&sz=128" alt="Zambia Meteorological Department placeholder logo">
+                        </div>
+                        <div>
+                            <h5>Zambia Meteorological Department</h5>
+                            <p>Climate and meteorological reference institution for the Zambia-focused portal.</p>
+                        </div>
+                    </div>
+                    <div class="about-logo-card">
+                        <div class="about-logo-mark">
+                            <img src="https://www.google.com/s2/favicons?domain=mgee.gov.zm&sz=128" alt="Ministry placeholder logo">
+                        </div>
+                        <div>
+                            <h5>Ministry Partnership Slot</h5>
+                            <p>Use this for a ministry or public-sector partner you want to acknowledge.</p>
+                        </div>
+                    </div>
+                    <div class="about-logo-card">
+                        <div class="about-logo-mark">
+                            <img src="https://www.google.com/s2/favicons?domain=wmo.int&sz=128" alt="Partnership placeholder logo">
+                        </div>
+                        <div>
+                            <h5>Additional Partner Slot</h5>
+                            <p>Reserved for future collaborators, sponsors, or technical partners.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-diagram-project"></i>
+                    </div>
+                    <div>
+                        <h3>How to use it well</h3>
+                        <p>A simple interpretation flow for better reading of the data.</p>
+                    </div>
+                </div>
+                <div class="about-steps">
+                    <div class="about-step">
+                        <div class="about-step-number">1</div>
+                        <div>
+                            <strong>Set the scope.</strong>
+                            <p>Start with a province, district, or year range so the analysis answers a specific question.</p>
+                        </div>
+                    </div>
+                    <div class="about-step">
+                        <div class="about-step-number">2</div>
+                        <div>
+                            <strong>Compare indicators together.</strong>
+                            <p>Read rainfall, temperature, and drought signals together instead of relying on one variable alone.</p>
+                        </div>
+                    </div>
+                    <div class="about-step">
+                        <div class="about-step-number">3</div>
+                        <div>
+                            <strong>Use rankings and comparisons carefully.</strong>
+                            <p>Rankings and district comparisons are useful for identifying patterns, but they should still be interpreted with local knowledge and context in mind.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <aside>
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div>
+                        <h4>Methodology</h4>
+                        <p>How the portal summarizes data.</p>
+                    </div>
+                </div>
+                <ul class="about-side-list">
+                    <li>
+                        <i class="fas fa-chart-column"></i>
+                        <span>Summaries are produced from stored monthly and annual records.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-scale-balanced"></i>
+                        <span>Rankings and district comparisons use aggregated values to show differences across areas.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-arrow-trend-up"></i>
+                        <span>Trend views are designed to show variability over time, not just single values.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h4>Who it serves</h4>
+                        <p>The audience the page is designed for.</p>
+                    </div>
+                </div>
+                <ul class="about-side-list">
+                    <li><i class="fas fa-user-graduate"></i><span>Researchers studying rainfall, temperature, and drought variability.</span></li>
+                    <li><i class="fas fa-landmark"></i><span>Policymakers supporting planning and resilience decisions.</span></li>
+                    <li><i class="fas fa-seedling"></i><span>Farmers and practitioners in agriculture, water, and disaster preparedness.</span></li>
+                    <li><i class="fas fa-globe-africa"></i><span>Public users looking for understandable climate context.</span></li>
+                </ul>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h4>Quick reading cues</h4>
+                        <p>Simple interpretation reminders.</p>
+                    </div>
+                </div>
+                <div class="about-tag-row">
+                    <span class="about-tag">Higher rainfall = wetter conditions</span>
+                    <span class="about-tag">Higher temperature = warmer conditions</span>
+                    <span class="about-tag">Lower ground water level may signal drought stress</span>
+                </div>
+            </section>
+
+            <section class="about-panel">
+                <div class="about-section-head">
+                    <div class="about-section-icon">
+                        <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4>Limitations</h4>
+                        <p>Important context for responsible use.</p>
+                    </div>
+                </div>
+                <ul class="about-list">
+                    <li>Coverage may vary by location and time period.</li>
+                    <li>Aggregated views simplify local complexity.</li>
+                    <li>The portal supports decisions, but it does not replace detailed technical assessment.</li>
+                </ul>
+            </section>
+        </aside>
+    </div>
+</div>
+{% endblock %}

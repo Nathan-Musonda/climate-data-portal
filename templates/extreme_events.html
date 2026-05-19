@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Extreme Events - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.extreme-shell { display: grid; gap: 1rem; max-width: 1200px; margin: 0 auto; }
+.extreme-hero {
+    background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(198,40,40,0.12), transparent 30%),
+        linear-gradient(135deg, #102A43 0%, #154360 40%, #0F766E 72%, #2E7D32 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 56px rgba(15, 23, 42, 0.18);
+}
+.extreme-hero h1, .extreme-hero p { color: white; }
+.extreme-hero p { max-width: 780px; opacity: 0.9; margin-bottom: 0; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+.hero-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-size: 0.8rem;
+}
+.extreme-panel {
+    background: rgba(255,255,255,0.98);
+    border: 1px solid rgba(226,232,240,0.9);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 14px 35px rgba(15,23,42,0.05);
+}
+.extreme-panel-header { display: flex; justify-content: space-between; align-items: end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.extreme-panel-header h3 { margin-bottom: 0.2rem; font-size: 1.08rem; }
+.extreme-panel-header p { margin-bottom: 0; color: var(--text-muted); font-size: 0.85rem; }
+.filter-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    background: #fff4eb;
+    color: #b45309;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.selection-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.95rem;
+}
+.selection-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-light);
+    background: #f8fafc;
+    color: #334155;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.selection-pill strong { color: var(--secondary); }
+.extreme-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.extreme-stat-card {
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1rem;
+}
+.extreme-stat-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    background: #fff4eb;
+    color: #b45309;
+    font-size: 1rem;
+}
+.extreme-stat-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+.extreme-stat-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--secondary);
+    line-height: 1.12;
+    margin: 0.35rem 0;
+}
+.extreme-stat-note {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+.chart-grid-main { display: grid; grid-template-columns: 1.7fr 1fr; gap: 1rem; }
+.chart-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.chart-card-lg {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 0.95rem;
+    box-shadow: 0 14px 32px rgba(15,23,42,0.04);
+    height: 100%;
+}
+.chart-card-lg .chart-container { height: 320px; }
+.hotspot-list,
+.insight-list { display: grid; gap: 0.75rem; }
+.hotspot-item,
+.insight-item {
+    border: 1px solid rgba(226,232,240,0.9);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+}
+.hotspot-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.hotspot-copy strong { display: block; margin-bottom: 0.2rem; }
+.hotspot-copy span,
+.insight-item p { color: var(--text-muted); margin-bottom: 0; }
+.hotspot-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #b45309;
+    white-space: nowrap;
+}
+.page-note {
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1rem;
+    color: var(--text-muted);
+}
+.page-note h5 { color: var(--secondary); margin-bottom: 0.65rem; }
+@media (max-width: 1200px) {
+    .extreme-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .chart-grid-main,
+    .chart-grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .extreme-hero { padding: 1.1rem; border-radius: 16px; }
+    .extreme-stats { grid-template-columns: 1fr; }
+    .chart-card-lg .chart-container { height: 260px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="extreme-shell">
+    <section class="extreme-hero">
+        <h1 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2"></i>Extreme Events</h1>
+        <p>Track heat spikes, heavy rainfall events, and severe drought periods across Zambia using one event-focused workspace.</p>
+        <div class="hero-badges">
+            <span><i class="fas fa-fire"></i> Heat-event signals</span>
+            <span><i class="fas fa-cloud-showers-heavy"></i> Heavy-rainfall thresholds</span>
+            <span><i class="fas fa-seedling"></i> Drought context</span>
+        </div>
+    </section>
+
+    <section class="extreme-panel">
+        <div class="extreme-panel-header">
+            <div>
+                <h3>Filters</h3>
+                <p>Focus extreme-event analysis on a province and reporting year while keeping the monthly event pattern visible.</p>
+            </div>
+            <div class="filter-summary" id="extremeFilterSummary">
+                <i class="fas fa-sliders-h"></i>
+                <span>All Provinces, latest available year</span>
+            </div>
+        </div>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold">Province</label>
+                <select id="extremeProvince" class="form-select">
+                    <option value="">All Provinces</option>
+                    {% for province in dashboard_provinces|default([]) %}
+                    <option value="{{ province }}">{{ province }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Year</label>
+                <select id="extremeYear" class="form-select">
+                    <option value="">Latest complete year</option>
+                    {% for year in dashboard_years|default([]) %}
+                    <option value="{{ year }}" {% if dashboard_latest_year and year == dashboard_latest_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button id="extremeApplyBtn" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i>Apply</button>
+            </div>
+            <div class="col-md-2">
+                <button id="extremeResetBtn" class="btn btn-outline-secondary w-100"><i class="fas fa-rotate-left me-2"></i>Reset</button>
+            </div>
+        </div>
+        <div class="selection-pills" aria-label="Current extreme-event selection">
+            <div class="selection-pill"><i class="fas fa-location-dot"></i><span>Scope <strong id="extremeScopeLabel">All Provinces</strong></span></div>
+            <div class="selection-pill"><i class="fas fa-calendar"></i><span>Year <strong id="extremeYearLabel">Latest available year</strong></span></div>
+        </div>
+    </section>
+
+    <section class="extreme-stats">
+        <article class="extreme-stat-card">
+            <div class="extreme-stat-icon"><i class="fas fa-fire"></i></div>
+            <div class="extreme-stat-label">Heat Events</div>
+            <div class="extreme-stat-value" id="heatCount">--</div>
+            <p class="extreme-stat-note">Records flagged by the high-temperature event threshold.</p>
+        </article>
+        <article class="extreme-stat-card">
+            <div class="extreme-stat-icon"><i class="fas fa-cloud-showers-heavy"></i></div>
+            <div class="extreme-stat-label">Heavy Rain Events</div>
+            <div class="extreme-stat-value" id="rainCount">--</div>
+            <p class="extreme-stat-note">Records meeting the heavy-rainfall event threshold.</p>
+        </article>
+        <article class="extreme-stat-card">
+            <div class="extreme-stat-icon"><i class="fas fa-sun"></i></div>
+            <div class="extreme-stat-label">Severe Drought Records</div>
+            <div class="extreme-stat-value" id="droughtCount">--</div>
+            <p class="extreme-stat-note">Rows explicitly classified as severe drought.</p>
+        </article>
+    </section>
+
+    <section class="chart-grid-main">
+        <div class="chart-card-lg">
+            <div class="chart-header">
+                <div class="chart-title"><i class="fas fa-chart-line me-2 text-danger"></i>Monthly Extreme Event Signals</div>
+                <div class="chart-subtitle">Monthly counts of heat, heavy-rainfall, and severe-drought records in the selected view.</div>
+            </div>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="extremeSignalsChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card-lg">
+            <div class="chart-header">
+                <div class="chart-title"><i class="fas fa-cloud-showers-heavy me-2 text-success"></i>Monthly Rainfall Pattern</div>
+                <div class="chart-subtitle">Average rainfall across the same event period.</div>
+            </div>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="impactPatternChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="chart-grid-2">
+        <div class="extreme-panel">
+            <div class="extreme-panel-header">
+                <div>
+                    <h3>Hotspot Provinces</h3>
+                    <p>Strongest current province-level concentrations of event activity.</p>
+                </div>
+            </div>
+            <div id="extremeHotspots" class="hotspot-list">
+                <div class="hotspot-item">
+                    <div class="hotspot-copy">
+                        <strong>Loading hotspots</strong>
+                        <span>Province-level event hotspots will appear here.</span>
+                    </div>
+                    <div class="hotspot-value">--</div>
+                </div>
+            </div>
+        </div>
+        <div class="extreme-panel">
+            <div class="extreme-panel-header">
+                <div>
+                    <h3>Interpretation</h3>
+                    <p>Short explanations for thresholds, peaks, and the current event mix.</p>
+                </div>
+            </div>
+            <div id="extremeInsights" class="insight-list">
+                <div class="insight-item">
+                    <p>Insights will appear after loading the active extreme-event selection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-note">
+        <h5><i class="fas fa-circle-info me-2"></i>How To Read This Page</h5>
+        <p class="mb-0">Heat and heavy-rainfall events are threshold-based signals, while severe drought records come directly from drought classifications in the dataset. Use this page to spot when multiple hazards cluster in the same year or province.</p>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/extreme_events.js') }}"></script>
+{% endblock %}
