@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Climate Data Visualization Portal
 
 ## Problem Statement
@@ -132,3 +133,7 @@ python -m unittest discover -s tests
 ## Project Value
 
 This portal turns climate records into accessible visual information. It helps users compare districts, inspect trends, understand drought and flood signals, and connect climate conditions to practical impacts such as population affected, crop yield, and hydropower.
+=======
+# climate-data-portal
+Climate Data Visualization Portal for Zambia
+>>>>>>> e0c043d07edacf9f2601bfdf03798113da89067f
