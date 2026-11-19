@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block title %}Data Explorer - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.explorer-hero {
+  position:relative; overflow:hidden; border-radius:16px;
+  padding:1.5rem; margin-bottom:1.1rem; color:#fff;
+  background: linear-gradient(135deg,#103f2f 0%,#1b5e20 48%,#0d47a1 100%);
+  box-shadow:0 20px 45px rgba(15,23,42,.18);
+}
+.explorer-hero::after {
+  content:""; position:absolute; inset:auto -60px -70px auto;
+  width:220px; height:220px; border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+.explorer-hero h1, .explorer-hero p { color:#fff; }
+.explorer-hero p { max-width:760px; color:rgba(255,255,255,.86); margin-bottom:0; }
+.explorer-kicker {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.45rem .85rem; margin-bottom:1rem; border-radius:999px;
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.16);
+  font-size:.76rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+}
+
+/* ── how-to ── */
+.how-to {
+  background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px;
+  padding:1rem 1.15rem; margin-bottom:1.1rem;
+}
+.how-to-title { font-size:.82rem; font-weight:700; color:#15803d; margin-bottom:.65rem;
+  display:flex; align-items:center; gap:.4rem; }
+.how-to-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.6rem; }
+.how-to-step { display:flex; align-items:flex-start; gap:.5rem; font-size:.82rem; color:#14532d; line-height:1.5; }
+.how-to-num {
+  flex-shrink:0; width:22px; height:22px; border-radius:50%;
+  background:#15803d; color:#fff; font-size:.72rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── panels ── */
+.explorer-panel {
+  background:#fff; border:1px solid #dfe7ef;
+  border-radius:16px; padding:1.25rem;
+  box-shadow:0 14px 30px rgba(15,23,42,.06); height:100%;
+}
+.explorer-panel-title {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; margin-bottom:1rem;
+}
+.explorer-panel-title h2,
+.explorer-panel-title h3 { font-size:1rem; margin:0; }
+.chart-meta { color:#64748b; font-size:.84rem; margin-bottom:0; }
+
+/* ── filter grid ── */
+.explorer-filter-grid {
+  display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.9rem;
+}
+.explorer-filter-grid .filter-field-wide { grid-column:span 2; }
+.explorer-filter-grid .form-label {
+  font-size:.72rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.08em; color:#51606f; margin-bottom:.4rem;
+}
+.explorer-filter-grid .form-select,
+.explorer-filter-grid .btn { min-height:44px; border-radius:10px; }
+.explorer-filter-note { margin-top:.85rem; color:#64748b; font-size:.84rem; }
+.explorer-selection-pills { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:.85rem; }
+.explorer-selection-pill {
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding:.5rem .75rem; border-radius:999px;
+  background:#f8fafc; border:1px solid #dfe7ef;
+  color:#334155; font-size:.77rem; font-weight:700;
+}
+.explorer-selection-pill strong { color:#102a43; font-weight:800; }
+
+/* ── summary cards ── */
+.summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+.summary-card {
+  border-radius:14px; padding:1rem; min-height:130px;
+  color:#102a43;
+  background:linear-gradient(180deg,#f8fbff 0%,#eef4fb 100%);
+  border:1px solid #dae7f5;
+}
+.summary-card:nth-child(2) { background:linear-gradient(180deg,#f5fbf6 0%,#e8f6eb 100%); border-color:#d1ead7; }
+.summary-card:nth-child(3) { background:linear-gradient(180deg,#fff8f1 0%,#ffeddc 100%); border-color:#f3dcc1; }
+.summary-card:nth-child(4) { background:linear-gradient(180deg,#faf5ff 0%,#f1e8fb 100%); border-color:#e2d5f5; }
+.summary-label {
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.08em;
+  font-weight:700; color:#5b6b7c; margin-bottom:.55rem;
+}
+.summary-value { font-size:1.8rem; line-height:1.05; font-weight:700; margin-bottom:.35rem; color:#102a43; }
+.summary-detail { font-size:.82rem; color:#52606d; margin-bottom:.2rem; }
+.stat-meaning {
+  font-size:.73rem; background:rgba(255,255,255,.6); border-radius:6px;
+  padding:.3rem .45rem; color:#334155; line-height:1.4; margin-top:.35rem;
+}
+
+/* ── chart area ── */
+.explorer-chart-wrap {
+  position:relative;
+  height:360px;
+  min-height:0;
+  overflow:hidden;
+  border-radius:12px;
+  background:#f8fbff;
+}
+.explorer-chart-wrap::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.58)),
+    repeating-linear-gradient(0deg,rgba(15,76,129,.055) 0 1px,transparent 1px 56px);
+}
+.explorer-chart-wrap canvas {
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100% !important;
+  height:100% !important;
+}
+.explorer-panel.chart-rainfall {
+  border-color:#bfdbfe;
+  background:linear-gradient(180deg,#ffffff 0%,#f5faff 100%);
+}
+.explorer-panel.chart-rainfall .explorer-chart-wrap {
+  border:1px solid #dbeafe;
+  background:linear-gradient(180deg,#f8fbff 0%,#eff8ff 100%);
+  height:420px;
+  overflow:visible;
+  padding-bottom:.4rem;
+}
+.rainfall-chart-stats {
+  display:none;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.75rem;
+  margin-top:.85rem;
+}
+.rainfall-chart-stat {
+  min-width:0;
+  padding:.75rem .85rem;
+  border:1px solid #dbeafe;
+  border-radius:10px;
+  background:#ffffff;
+}
+.rainfall-chart-stat span {
+  display:block;
+  color:#64748b;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.rainfall-chart-stat strong {
+  display:block;
+  margin-top:.25rem;
+  color:#0f2742;
+  font-size:.98rem;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+.explorer-panel.chart-rainfall .rainfall-chart-stats {
+  display:grid;
+}
+
+/* ── insight box ── */
+.insight-card {
+  border-radius:12px; padding:1rem;
+  background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%); color:#fff;
+}
+.insight-card p { margin-bottom:.45rem; color:rgba(255,255,255,.82); font-size:.84rem; line-height:1.6; }
+.insight-card p:last-child { margin-bottom:0; }
+
+/* ── table ── */
+.table-shell { border-radius:12px; overflow-x:auto; overflow-y:hidden; border:1px solid #dfe7ef; }
+.table-shell table { margin-bottom:0; white-space:nowrap; }
+.table-shell thead th {
+  background:#102a43; color:#fff; font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.06em; border:none; padding:.7rem .85rem;
+}
+.table-shell tbody td { vertical-align:middle; font-size:.85rem; }
+
+/* ── severity pills ── */
+.severity-pill {
+  display:inline-flex; align-items:center;
+  padding:.25rem .65rem; border-radius:999px; font-size:.72rem; font-weight:700;
+}
+.severity-pill.severe   { background:#fde8e8; color:#b91c1c; }
+.severity-pill.moderate { background:#fff1d6; color:#b45309; }
+.severity-pill.mild     { background:#fef3c7; color:#92400e; }
+.severity-pill.no-drought { background:#dcfce7; color:#166534; }
+
+.empty-state { padding:2rem 1rem; text-align:center; color:#64748b; }
+
+/* ── responsive ── */
+@media(max-width:1199.98px){
+  .explorer-filter-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:767.98px){
+  .explorer-hero { padding:1.25rem; border-radius:12px; }
+  .explorer-filter-grid, .summary-grid { grid-template-columns:1fr; }
+  .explorer-filter-grid .filter-field-wide { grid-column:span 1; }
+  .explorer-panel { border-radius:12px; padding:1rem; }
+  .explorer-chart-wrap { height:280px; }
+  .rainfall-chart-stats { grid-template-columns:1fr 1fr; }
+  .summary-value { font-size:1.5rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="explorer-hero">
+  <div class="explorer-kicker"><i class="fas fa-sliders-h"></i> Explore climate information</div>
+  <h1 class="mb-3"><i class="fas fa-magnifying-glass-chart me-2"></i>Climate Explorer</h1>
+  <p>Choose a province, district, year range, and climate variable to explore Zambia's temperature, rainfall, ground water levels, and drought patterns — all in one place. Filter as broadly or as specifically as you need.</p>
+</section>
+
+<!-- HOW TO -->
+<div class="how-to">
+  <div class="how-to-title">🔍 How to use this explorer</div>
+  <div class="how-to-steps">
+    <div class="how-to-step">
+      <div class="how-to-num">1</div>
+      <div>Choose a <strong>province</strong> and <strong>district</strong> — or leave both as "All" to see the national picture.</div>
+    </div>
+    <div class="how-to-step">
+      <div class="how-to-num">2</div>
+      <div>Set a <strong>start and end year</strong> to focus on a specific period — for example 2019 to 2022.</div>
+    </div>
+    <div class="how-to-step">
+      <div class="how-to-num">3</div>
+      <div>Choose a <strong>climate variable</strong> — rainfall, daytime heat, night-time temperature, or ground water level.</div>
+    </div>
+    <div class="how-to-step">
+      <div class="how-to-num">4</div>
+      <div>The chart, summary cards, and table all update automatically. Use <strong>Download</strong> to save the filtered data as a file.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<section class="explorer-panel mb-4">
+  <div class="explorer-panel-title">
+    <div>
+      <h2>Choose what to explore</h2>
+      <p class="chart-meta">All charts and the data table below update automatically when you change any filter.</p>
+    </div>
+    <button id="downloadExplorerData" class="btn btn-outline-secondary">
+      <i class="fas fa-download me-2"></i>Download this view
+    </button>
+  </div>
+
+  <div class="explorer-filter-grid">
+    <div class="filter-field-wide">
+      <label class="form-label" for="explorerProvince">Province</label>
+      <select id="explorerProvince" class="form-select">
+        <option value="all">All Provinces</option>
+        {% for province in explorer_provinces %}
+        <option value="{{ province }}">{{ province }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-field-wide">
+      <label class="form-label" for="explorerDistrict">District</label>
+      <select id="explorerDistrict" class="form-select">
+        <option value="all">All Districts</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="explorerStartYear">From year</label>
+      <select id="explorerStartYear" class="form-select">
+        {% for year in explorer_years %}
+        <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="explorerEndYear">To year</label>
+      <select id="explorerEndYear" class="form-select">
+        {% for year in explorer_years %}
+        <option value="{{ year }}" {% if loop.last %}selected{% endif %}>{{ year }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-field-wide">
+      <label class="form-label" for="explorerVariable">What do you want to see?</label>
+      <select id="explorerVariable" class="form-select">
+        <option value="Rainfall_mm">Rainfall (how much rain fell)</option>
+        <option value="Temp_Max_C">Daytime temperature (hottest part of the day)</option>
+        <option value="Temp_Min_C">Night-time temperature (coolest part of the day)</option>
+        <option value="SoilMoisture_pct">Ground water level (how wet the soil is)</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="explorerChartType">Chart style</label>
+      <select id="explorerChartType" class="form-select">
+        <option value="bar" selected>Bar chart</option>
+        <option value="line">Line chart</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="explorer-filter-note" id="explorerSelectionLabel">
+    Showing climate information across the full time period.
+  </div>
+  <div class="explorer-selection-pills" aria-label="Current explorer selection">
+    <div class="explorer-selection-pill">
+      <i class="fas fa-wave-square"></i>
+      <span>Showing <strong id="explorerSelectionVariable">Rainfall</strong></span>
+    </div>
+    <div class="explorer-selection-pill">
+      <i class="fas fa-location-dot"></i>
+      <span>Area <strong id="explorerSelectionScope">All provinces and districts</strong></span>
+    </div>
+    <div class="explorer-selection-pill">
+      <i class="fas fa-calendar"></i>
+      <span>Years <strong id="explorerSelectionYears">Full range</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY CARDS -->
+<section class="summary-grid mb-4" id="explorerSummaryGrid">
+  <article class="summary-card">
+    <div class="summary-label">Average value</div>
+    <div class="summary-value" id="summaryAverage">--</div>
+    <div class="summary-detail" id="summaryAverageLabel">Waiting for information</div>
+    <div class="stat-meaning">The typical value for the area and time period you selected.</div>
+  </article>
+  <article class="summary-card">
+    <div class="summary-label">Readings included</div>
+    <div class="summary-value" id="summaryRecords">--</div>
+    <div class="summary-detail" id="summaryCoverage">Coverage will appear here</div>
+    <div class="stat-meaning">How many climate readings are included in this view.</div>
+  </article>
+  <article class="summary-card">
+    <div class="summary-label">Lowest to highest</div>
+    <div class="summary-value" id="summaryRange">--</div>
+    <div class="summary-detail" id="summaryRangeDetail">Lowest and highest values</div>
+    <div class="stat-meaning">This shows how much the selected climate topic changes in the view above.</div>
+  </article>
+  <article class="summary-card">
+    <div class="summary-label">Drought conditions</div>
+    <div class="summary-value" id="summaryDrought">--</div>
+    <div class="summary-detail">Most common drought level in this view</div>
+    <div class="stat-meaning">Even when exploring temperature or rainfall, this card shows what drought conditions were like at the same time.</div>
+  </article>
+</section>
+
+<!-- CHART + INSIGHT -->
+<div class="row g-4">
+  <div class="col-lg-8">
+    <section class="explorer-panel">
+      <div class="explorer-panel-title">
+        <div>
+          <h3 id="explorerChartTitle">Climate trend</h3>
+          <p class="chart-meta" id="explorerChartSubtitle">The chart updates when you change any filter above.</p>
+        </div>
+      </div>
+      <div class="explorer-chart-wrap">
+        <canvas id="explorerChart" aria-label="Climate data explorer chart showing the selected variable over time"></canvas>
+      </div>
+      <div class="rainfall-chart-stats" id="rainfallChartStats" aria-label="Rainfall trend summary">
+        <div class="rainfall-chart-stat">
+          <span>Trend</span>
+          <strong id="rainfallStatTrend">--</strong>
+        </div>
+        <div class="rainfall-chart-stat">
+          <span>Change</span>
+          <strong id="rainfallStatChange">--</strong>
+        </div>
+        <div class="rainfall-chart-stat">
+          <span>Wettest</span>
+          <strong id="rainfallStatWettest">--</strong>
+        </div>
+        <div class="rainfall-chart-stat">
+          <span>Driest</span>
+          <strong id="rainfallStatDriest">--</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="col-lg-4">
+    <section class="explorer-panel h-100">
+      <div class="explorer-panel-title">
+        <div>
+          <h3>What does this mean?</h3>
+          <p class="chart-meta">A simple explanation of what your selected view is showing.</p>
+        </div>
+      </div>
+      <div class="insight-card" id="explorerInsightBox">
+        <p>Select your filters above and the chart will load. This box will then explain what the data means in plain language — whether rainfall is above average, temperatures are rising, or ground water levels are low.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- DATA TABLE -->
+<section class="explorer-panel mt-4">
+  <div class="explorer-panel-title">
+    <div>
+      <h3>Detailed readings behind the chart</h3>
+      <p class="chart-meta" id="explorerTableMeta">Showing the individual climate readings used for this view.</p>
+    </div>
+  </div>
+  <div class="table-shell table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Province</th>
+          <th>District</th>
+          <th>Rainfall (mm)</th>
+          <th>Daytime temp (°C)</th>
+          <th>Night-time temp (°C)</th>
+          <th>Ground water level (%)</th>
+          <th>Drought conditions</th>
+        </tr>
+      </thead>
+      <tbody id="explorerTableBody">
+        <tr>
+          <td colspan="8" class="empty-state">Loading explorer data...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+window.explorerConfig = {
+  provinces: {{ explorer_provinces|tojson }},
+  districts: {{ explorer_districts|tojson }},
+  years: {{ explorer_years|tojson }}
+};
+</script>
+<script src="{{ url_for('static', filename='js/data_explorer.js') }}"></script>
+{% endblock %}

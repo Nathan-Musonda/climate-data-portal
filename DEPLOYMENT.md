@@ -40,7 +40,7 @@ pip install -r requirements.txt
 Production-style app server:
 
 ```powershell
-python -m waitress --host=127.0.0.1 --port=5000 app:app
+python -m waitress --host=127.0.0.1 --port=5000 backend.app:app
 ```
 
 Or use the included helper:
@@ -107,7 +107,7 @@ For Windows hosting, you can run `waitress`:
 Point the service command to:
 
 ```powershell
-python -m waitress --host=127.0.0.1 --port=5000 app:app
+python -m waitress --host=127.0.0.1 --port=5000 backend.app:app
 ```
 
 ## 9. Linux Notes

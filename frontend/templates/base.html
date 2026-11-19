@@ -1,0 +1,178 @@
+{# Single source of truth for sidebar and footer navigation. #}
+{% set nav_groups = [
+  ('Explore', [
+    ('Home', '/', 'fa-home', ['/']),
+    ('Overview', '/overview', 'fa-chart-line', ['/overview', '/dashboard']),
+    ('Interactive Map', '/interactive-map', 'fa-map-marked-alt', ['/interactive-map']),
+    ('Data Explorer', '/data-explorer', 'fa-table', ['/data-explorer']),
+  ]),
+  ('Climate indicators', [
+    ('Rainfall', '/rainfall', 'fa-tint', ['/rainfall']),
+    ('Temperature', '/temperature', 'fa-thermometer-half', ['/temperature']),
+    ('Drought Indicators', '/drought', 'fa-sun', ['/drought']),
+    ('Flood Events', '/flood-events', 'fa-house-flood-water', ['/flood-events']),
+    ('Extreme Events', '/extreme-events', 'fa-bolt', ['/extreme-events']),
+  ]),
+  ('Planning', [
+    ('Projections', '/projections', 'fa-arrow-trend-up', ['/projections']),
+    ('Impact Analysis', '/impacts', 'fa-chart-bar', ['/impacts']),
+    ('District Comparison', '/comparison', 'fa-scale-balanced', ['/comparison', '/rankings']),
+  ]),
+  ('Project', [
+    ('About', '/about', 'fa-info-circle', ['/about']),
+  ]),
+] %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Zambia Climate Portal{% endblock %}</title>
+    <meta name="theme-color" content="#0F766E">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}?v=4.4.0"></script>
+    <script src="{{ url_for('static', filename='js/chart_theme.js') }}"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="app-shell" id="appShell">
+        <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <aside class="app-sidebar" id="appSidebar" aria-label="Primary navigation">
+            <div class="sidebar-inner">
+                <a class="sidebar-brand" href="/">
+                    <span class="sidebar-brand-icon"><i class="fas fa-cloud-sun-rain"></i></span>
+                    <span class="sidebar-brand-text">
+                        <strong>Zambia Climate Portal</strong>
+                        <span>Climate intelligence for faster decisions</span>
+                    </span>
+                </a>
+
+                <form class="sidebar-search" id="globalNavSearchForm" role="search" aria-label="Search portal">
+                    <span class="sidebar-search-icon"><i class="fas fa-search"></i></span>
+                    <span class="sidebar-search-content">
+                        <span class="sidebar-search-hint">Search</span>
+                        <span class="sidebar-search-row">
+                            <input class="sidebar-search-input" id="globalNavSearchInput" type="search" list="globalNavSearchSuggestions" placeholder="District, province, page" autocomplete="off">
+                            <button class="sidebar-search-submit" type="submit" aria-label="Search">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </span>
+                        <datalist id="globalNavSearchSuggestions"></datalist>
+                    </span>
+                </form>
+
+                {% block sidebar_tools %}{% endblock %}
+
+                <nav class="sidebar-nav" aria-label="Portal pages">
+                    {% for group_title, links in nav_groups %}
+                    <div class="sidebar-group">
+                        <div class="sidebar-section-title">{{ group_title }}</div>
+                        {% for label, href, icon, paths in links %}
+                        {% set is_active = request.path in paths %}
+                        <a class="sidebar-link{% if is_active %} active{% endif %}" href="{{ href }}"{% if is_active %} aria-current="page"{% endif %}><i class="fas {{ icon }}" aria-hidden="true"></i><span class="sidebar-link-text">{{ label }}</span></a>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="live-clock" id="liveClock" aria-live="polite">
+                        <i class="fas fa-clock"></i>
+                        <span class="live-clock-full" id="liveClockFull">--:--:--</span>
+                        <span class="live-clock-compact" id="liveClockCompact">--:--</span>
+                    </div>
+                    <label class="sidebar-pin" for="sidebarPinned">
+                        <input type="checkbox" id="sidebarPinned">
+                        <span class="sidebar-pin-label">Keep sidebar open</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <div class="page-column">
+            <!-- Main Content -->
+            <main class="py-4" id="main-content" tabindex="-1">
+                <div class="container">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer>
+                <div class="container">
+                    <div class="site-footer-grid">
+                        <div class="site-footer-block">
+                            <h5><i class="fas fa-cloud-sun-rain me-2"></i>Zambia Climate Portal</h5>
+                            <p class="mb-0 text-secondary">National climate intelligence platform for evidence-based planning and climate risk monitoring.</p>
+                        </div>
+                        <div class="site-footer-block">
+                            <h5>Data Coverage</h5>
+                            <div class="site-footer-metrics">
+                                <span class="site-footer-chip"><i class="fas fa-database"></i><span id="footerRecordCount">Loading climate readings...</span></span>
+                                <span class="site-footer-chip"><i class="fas fa-map"></i><span id="footerProvinceCount">Loading provinces...</span></span>
+                                <span class="site-footer-chip"><i class="fas fa-calendar"></i><span id="footerYearCoverage">Loading years...</span></span>
+                                <span class="site-footer-chip"><i class="fas fa-chart-line"></i>Integrated analysis views</span>
+                            </div>
+                        </div>
+                        <div class="site-footer-block">
+                            <h5>Quick Links</h5>
+                            <div class="site-footer-metrics">
+                                {% for group_title, links in nav_groups %}{% for label, href, icon, paths in links %}{% if href != '/' %}
+                                <a class="site-footer-chip" href="{{ href }}"><i class="fas {{ icon }}" aria-hidden="true"></i>{{ label }}</a>
+                                {% endif %}{% endfor %}{% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="bg-secondary my-3">
+                    <div class="text-center small text-secondary">
+                        <p class="mb-0">&copy; {{ now_year }} Zambia Climate Data Visualization Portal | Data Source: Zambia Meteorological Department</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div class="ticker-container ticker-container-fixed">
+        <div class="ticker-label">
+            <i class="fas fa-stream me-1"></i> CLIMATE UPDATES
+        </div>
+        <div class="ticker-wrapper">
+            <div class="ticker-content" id="tickerContent">
+                <span class="ticker-item">Loading climate updates...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="appNotificationStack" class="app-notification-stack" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.portalDefaultYear = {{ dashboard_latest_year|default(none)|tojson }};
+        window.portalLatestDataYear = {{ dashboard_latest_data_year|default(none)|tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/monthly.js') }}"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

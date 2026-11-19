@@ -1,0 +1,1651 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Map - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.map-page-shell { display: grid; gap: 1.25rem; }
+.map-hero {
+    background: linear-gradient(135deg, #102a43 0%, #146356 58%, #2e7d32 100%);
+    color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem 1.65rem;
+}
+.map-hero h1 {
+    color: #fff;
+    font-size: 1.45rem;
+    margin-bottom: 0.35rem;
+}
+.map-hero-sub {
+    color: rgba(255,255,255,0.82);
+    font-size: 0.93rem;
+    line-height: 1.6;
+    margin-bottom: 1.1rem;
+    max-width: 52rem;
+}
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.65rem;
+}
+.hero-stat {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+}
+.hero-stat span {
+    display: block;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.72rem;
+    margin-bottom: 0.15rem;
+}
+.hero-stat strong {
+    display: block;
+    color: #fff;
+    font-size: 1.05rem;
+}
+.how-to {
+    background: #f0faf8;
+    border: 1px solid #c3e6df;
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+}
+.how-to-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #0f766e;
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 0.65rem;
+}
+.how-to-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.6rem;
+}
+.how-to-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    color: #1e4e47;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.how-to-num {
+    align-items: center;
+    background: #0f766e;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    height: 22px;
+    justify-content: center;
+    width: 22px;
+}
+.map-main {
+    display: grid;
+    grid-template-columns: 1.25fr 0.9fr;
+    gap: 1rem;
+}
+.map-card,
+.detail-panel {
+    background: #fff;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.04);
+    padding: 1.1rem;
+    min-width: 0;
+}
+.toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+}
+.toolbar-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+}
+.toolbar-label {
+    color: #637381;
+    font-size: 0.76rem;
+    font-weight: 800;
+    margin-right: 0.2rem;
+}
+.metric-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid #d1dce8;
+    background: #fff;
+    color: #334e68;
+    border-radius: 999px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.77rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+.metric-btn:hover {
+    background: #e8f5f2;
+    border-color: #0f766e;
+    color: #0f766e;
+}
+.metric-btn.active {
+    background: #0f766e;
+    border-color: #0f766e;
+    color: #fff;
+}
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: flex-end;
+    background: #f8fafc;
+    border: 1px solid #e2eaf2;
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.85rem;
+    position: sticky;
+    top: 0.75rem;
+    z-index: 650;
+    box-shadow: 0 8px 18px rgba(15,23,42,0.08);
+}
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.filter-label {
+    color: #52606d;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.filter-bar select,
+.filter-bar input {
+    background: #fff;
+    border: 1px solid #d1dce8;
+    border-radius: 6px;
+    color: #334e68;
+    font-size: 0.84rem;
+    padding: 0.38rem 0.65rem;
+}
+.filter-actions {
+    display: flex;
+    gap: 0.45rem;
+    align-self: flex-end;
+}
+.btn-apply,
+.btn-reset {
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+}
+.btn-apply {
+    background: #0f766e;
+    border: none;
+    color: #fff;
+    font-weight: 800;
+}
+.btn-reset {
+    background: #fff;
+    border: 1px solid #d1dce8;
+    color: #334e68;
+}
+.map-help-text {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #52606d;
+    font-size: 0.82rem;
+    margin-bottom: 0.6rem;
+}
+.map-shell {
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+#districtMap,
+.leaflet-container {
+    width: 100%;
+    height: 560px;
+    background: #eef4f8;
+}
+.map-notice {
+    display: none;
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 500;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 8px 22px rgba(15,23,42,0.14);
+    color: #334e68;
+    font-size: 0.82rem;
+    padding: 0.75rem 0.9rem;
+}
+.leaflet-popup-content {
+    margin: 0.7rem 0.85rem;
+    font-size: 0.83rem;
+}
+.leaflet-popup-content strong {
+    color: #102a43;
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+}
+.district-hover-tooltip {
+    background: rgba(15, 23, 42, 0.94);
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(15,23,42,0.22);
+    color: #fff;
+    font-size: 0.76rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+}
+.district-hover-tooltip::before { display: none; }
+.legend {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.04);
+    padding: 0.7rem 0.85rem;
+}
+.map-legend-panel {
+    margin-top: 0.75rem;
+}
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 0.25rem 0.75rem;
+}
+.legend h6 {
+    color: #263238;
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+}
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #334e68;
+    font-size: 0.76rem;
+    margin-bottom: 0.28rem;
+}
+.legend-swatch {
+    border-radius: 3px;
+    flex-shrink: 0;
+    height: 13px;
+    width: 13px;
+}
+.detail-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.panel-title {
+    color: #102a43;
+    font-size: 1rem;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+.panel-province {
+    color: #52606d;
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+}
+.panel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: #e8f5f2;
+    border-radius: 999px;
+    color: #0f766e;
+    font-size: 0.73rem;
+    font-weight: 800;
+    padding: 0.3rem 0.7rem;
+    white-space: normal;
+}
+.metric-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+.metric-card {
+    border: 1px solid #e2eaf2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.75rem 0.85rem;
+}
+.metric-card.active-focus {
+    background: #f0faf8;
+    border-color: #0f766e;
+    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.12);
+}
+.metric-card.muted-focus {
+    background: #f8fafc;
+    opacity: 0.62;
+}
+.mc-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #637381;
+    font-size: 0.72rem;
+    line-height: 1.25;
+    min-width: 0;
+}
+.mc-value {
+    color: #102a43;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+.mc-meaning {
+    color: #52606d;
+    font-size: 0.71rem;
+    line-height: 1.45;
+    margin-top: 0.15rem;
+}
+.mc-status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    margin-top: 0.1rem;
+    padding: 0.18rem 0.55rem;
+    width: fit-content;
+}
+.status-good { background: #e8f5f2; color: #0a6e4f; }
+.status-caution { background: #fef3c7; color: #92400e; }
+.status-concern { background: #fee2e2; color: #991b1b; }
+.status-neutral { background: #f1f5f9; color: #475569; }
+.plain-summary {
+    background: #f0faf8;
+    border-left: 3px solid #0f766e;
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 0.95rem;
+}
+.ps-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #0f766e;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+}
+.ps-text {
+    color: #1e3a35;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+.mini-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.mini-chart-card {
+    border: 1px solid #e2eaf2;
+    border-radius: 8px;
+    padding: 0.75rem 0.85rem;
+}
+.mc-chart-title {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #334e68;
+    font-size: 0.77rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+.mc-chart-wrap {
+    height: 110px;
+    position: relative;
+}
+.mc-chart-wrap.drought-chart-wrap {
+    height: 210px;
+    margin-bottom: 0.45rem;
+    overflow: visible;
+}
+.mc-chart-wrap canvas {
+    display: block;
+    height: 100% !important;
+    max-height: 100%;
+    max-width: 100%;
+    width: 100% !important;
+}
+.drought-chart-wrap canvas {
+    transform: translateY(-12px);
+}
+.drought-condition-summary {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 6px;
+    color: #7c2d12;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.65rem;
+}
+.drought-risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+}
+.drought-risk-item {
+    background: #fff;
+    border: 1px solid #fed7aa;
+    border-radius: 6px;
+    min-width: 0;
+    padding: 0.5rem 0.55rem;
+}
+.drought-risk-item span {
+    color: #9a3412;
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+.drought-risk-item strong {
+    color: #7c2d12;
+    display: block;
+    font-size: 0.92rem;
+    line-height: 1.2;
+    margin-top: 0.12rem;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #637381;
+    gap: 0.65rem;
+    min-height: 420px;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+.empty-icon {
+    color: #94a3b8;
+    font-size: 2.2rem;
+}
+.empty-title {
+    color: #334e68;
+    font-size: 0.92rem;
+    font-weight: 800;
+}
+.empty-sub {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    max-width: 240px;
+}
+.map-notification {
+    align-items: center;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.82rem;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+}
+.map-notification.show { display: flex; }
+.map-notification.info { background: #e0f2fe; color: #0369a1; }
+.map-notification.danger { background: #fee2e2; color: #991b1b; }
+@media (max-width: 800px) {
+    .filter-actions {
+        width: 100%;
+    }
+    .filter-actions button {
+        flex: 1 1 0;
+    }
+    .map-main,
+    .metric-cards {
+        grid-template-columns: 1fr;
+    }
+    .panel-badge {
+        white-space: normal;
+    }
+    .drought-risk-grid {
+        grid-template-columns: 1fr;
+    }
+    #districtMap,
+    .leaflet-container {
+        height: 680px;
+    }
+}
+
+@media (max-width: 380px) {
+    .map-page-shell {
+        gap: 0.85rem;
+    }
+
+    .map-hero,
+    .how-to,
+    .map-card,
+    .detail-panel {
+        border-radius: 10px;
+        padding: 0.8rem;
+    }
+
+    .map-hero h1 {
+        font-size: 1.12rem;
+        line-height: 1.25;
+    }
+
+    .map-hero-sub,
+    .map-help-text,
+    .how-to-step,
+    #districtSummaryText {
+        font-size: 0.78rem;
+    }
+
+    .hero-stats,
+    .how-to-steps,
+    .legend-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stat {
+        padding: 0.6rem 0.7rem;
+    }
+
+    .toolbar-row,
+    .toolbar-left,
+    .filter-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .toolbar-label {
+        margin-right: 0;
+    }
+
+    .metric-btn,
+    .btn-apply,
+    .btn-reset,
+    .filter-bar select,
+    .filter-bar input {
+        width: 100%;
+    }
+
+    .metric-btn {
+        justify-content: center;
+    }
+
+    .filter-bar {
+        position: static;
+        padding: 0.65rem;
+        box-shadow: none;
+    }
+
+    #districtMap,
+    .leaflet-container {
+        height: 440px;
+    }
+
+    .map-notice {
+        left: 0.55rem;
+        right: 0.55rem;
+        bottom: 0.55rem;
+        font-size: 0.75rem;
+        padding: 0.6rem;
+    }
+
+    .metric-card,
+    .mini-chart-card {
+        padding: 0.65rem;
+    }
+
+    .mc-value {
+        font-size: 1rem;
+    }
+
+    .mc-chart-wrap {
+        height: 150px;
+    }
+
+    .mc-chart-wrap.drought-chart-wrap {
+        height: 190px;
+    }
+
+    .empty-state {
+        min-height: 260px;
+        padding: 1.2rem 0.6rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="map-page-shell">
+    <section class="map-hero">
+        <h1><i class="fas fa-map-marked-alt me-2"></i>Explore Zambia's Climate by District</h1>
+        <p class="map-hero-sub">Choose any district in Zambia to see how temperature, rainfall, and drought have changed. The map colour tells you at a glance which areas need the most attention.</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span>Districts covered</span><strong>{{ dashboard_districts|default([])|length }}</strong></div>
+            <div class="hero-stat"><span>Default year</span><strong>{{ dashboard_latest_year|default("Latest") }}</strong></div>
+            <div class="hero-stat"><span>Climate variables</span><strong>4</strong></div>
+            <div class="hero-stat"><span>Data source</span><strong>ZMD · NASA · SADC</strong></div>
+        </div>
+    </section>
+
+    <section class="how-to">
+        <div class="how-to-title"><i class="fas fa-book-open"></i> How to use this map</div>
+        <div class="how-to-steps">
+            <div class="how-to-step"><div class="how-to-num">1</div><div>Choose what you want to see using the metric buttons.</div></div>
+            <div class="how-to-step"><div class="how-to-num">2</div><div>Pick a year from the dropdown. The map colours update to show that year's conditions.</div></div>
+            <div class="how-to-step"><div class="how-to-num">3</div><div>Click a district on the map or type its name in the search box.</div></div>
+            <div class="how-to-step"><div class="how-to-num">4</div><div>Read the plain-language summary to understand what the numbers mean.</div></div>
+        </div>
+    </section>
+
+    <div class="map-notification" id="mapNotification" role="alert"></div>
+
+    <section class="map-main">
+        <div class="map-card">
+            <div class="toolbar-row">
+                <div class="toolbar-left">
+                    <span class="toolbar-label">Show on map:</span>
+                    <button class="metric-btn active" type="button" data-map-metric="drought"><i class="fas fa-sun"></i> Drought level</button>
+                    <button class="metric-btn" type="button" data-map-metric="rainfall"><i class="fas fa-cloud-rain"></i> Rainfall</button>
+                    <button class="metric-btn" type="button" data-map-metric="temperature"><i class="fas fa-temperature-half"></i> Temperature</button>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label" for="mapYear"><i class="fas fa-calendar"></i> Choose a year</label>
+                    <select id="mapYear">
+                        {% if dashboard_latest_year %}
+                        <option value="{{ dashboard_latest_year }}" selected>Latest complete year ({{ dashboard_latest_year }})</option>
+                        {% endif %}
+                        {% for year in dashboard_years|default([]) %}
+                        {% if not dashboard_latest_year or year != dashboard_latest_year %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="mapDistrictSearch"><i class="fas fa-magnifying-glass"></i> Search district</label>
+                    <input id="mapDistrictSearch" type="search" list="mapDistrictSuggestions" placeholder="Type a district name">
+                    <datalist id="mapDistrictSuggestions"></datalist>
+                </div>
+            </div>
+
+            <div class="map-help-text" id="interactiveMapHelp">
+                <i class="fas fa-circle-info"></i> Darker colours indicate stronger values for the selected metric. Click any district to see the full breakdown.
+            </div>
+
+            <div class="map-shell">
+                <div id="districtMap" role="application" aria-label="Interactive map of Zambia districts"></div>
+                <div class="map-notice" id="interactiveMapNotice"></div>
+            </div>
+            <div class="map-legend-panel" id="mapLegendPanel" aria-label="Map color legend"></div>
+        </div>
+
+        <aside class="detail-panel" id="detailPanel">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon"><i class="fas fa-hand-pointer"></i></div>
+                <div class="empty-title">No district selected yet</div>
+                <div class="empty-sub">Click any district on the map or type a name in the search box to see its climate data here.</div>
+            </div>
+
+            <div id="districtDetail" style="display:none; flex-direction:column; gap:0.85rem;">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title" id="panelDistrictName">--</div>
+                        <div class="panel-province" id="panelProvinceName">--</div>
+                    </div>
+                    <div class="panel-badge" id="panelYearBadge"><i class="fas fa-calendar"></i> --</div>
+                </div>
+
+                <div style="font-size:0.83rem;color:#334e68;line-height:1.6;" id="districtSummaryText">Select a district to see its climate summary.</div>
+
+                <div class="metric-cards">
+                    <div class="metric-card" data-focus-metric="rainfall">
+                        <div class="mc-label"><i class="fas fa-cloud-rain"></i> Rainfall</div>
+                        <div class="mc-value" id="mapRainfallStat">--</div>
+                        <div class="mc-meaning">How much rain fell this year. Zambia's average is around 1,000 mm/year.</div>
+                        <div class="mc-status status-neutral" id="rainfallStatus">--</div>
+                    </div>
+                    <div class="metric-card" data-focus-metric="temperature">
+                        <div class="mc-label"><i class="fas fa-temperature-high"></i> Max temperature</div>
+                        <div class="mc-value" id="mapTempMaxStat">--</div>
+                        <div class="mc-meaning">The average hottest daily temperature. Above 32°C increases stress on crops and people.</div>
+                        <div class="mc-status status-neutral" id="tempMaxStatus">--</div>
+                    </div>
+                    <div class="metric-card" data-focus-metric="temperature">
+                        <div class="mc-label"><i class="fas fa-temperature-low"></i> Min temperature</div>
+                        <div class="mc-value" id="mapTempMinStat">--</div>
+                        <div class="mc-meaning">The average coolest daily temperature. Very low values can damage crops at night.</div>
+                        <div class="mc-status status-neutral" id="tempMinStatus">--</div>
+                    </div>
+                    <div class="metric-card" data-focus-metric="temperature">
+                        <div class="mc-label"><i class="fas fa-temperature-half"></i> Temperature range</div>
+                        <div class="mc-value" id="mapTempRangeStat">--</div>
+                        <div class="mc-meaning">Gap between average daily high and low temperatures for this district.</div>
+                        <div class="mc-status status-neutral" id="tempRangeStatus">--</div>
+                    </div>
+                    <div class="metric-card" data-focus-metric="drought">
+                        <div class="mc-label"><i class="fas fa-sun"></i> Drought severity</div>
+                        <div class="mc-value" id="mapDroughtStat">--</div>
+                        <div class="mc-meaning">The dominant drought condition recorded for the selected district.</div>
+                        <div class="mc-status status-neutral" id="droughtStatus">--</div>
+                    </div>
+                </div>
+
+                <div class="plain-summary">
+                    <div class="ps-label" id="plainSummaryLabel"><i class="fas fa-comment-dots"></i> What does this mean?</div>
+                    <div class="ps-text" id="plainSummaryText">Summary will appear here once you select a district.</div>
+                </div>
+
+                <div class="mini-charts">
+                    <div class="mini-chart-card">
+                        <div class="mc-chart-title"><i class="fas fa-cloud-rain"></i> Rainfall pattern</div>
+                        <div class="mc-chart-wrap"><canvas id="miniRainfallChart"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mc-chart-title"><i class="fas fa-temperature-half"></i> Temperature range</div>
+                        <div class="mc-chart-wrap"><canvas id="miniTempChart"></canvas></div>
+                    </div>
+                    <div class="mini-chart-card">
+                        <div class="mc-chart-title"><i class="fas fa-sun"></i> Drought conditions</div>
+                        <div class="mc-chart-wrap drought-chart-wrap"><canvas id="miniDroughtChart"></canvas></div>
+                        <div class="drought-risk-grid" aria-label="Drought risk indicators">
+                            <div class="drought-risk-item"><span>Risk score</span><strong id="droughtRiskScore">--</strong></div>
+                            <div class="drought-risk-item"><span>Moderate+</span><strong id="droughtModerateShare">--</strong></div>
+                            <div class="drought-risk-item"><span>Severe+</span><strong id="droughtSevereShare">--</strong></div>
+                        </div>
+                        <div class="drought-condition-summary" id="droughtConditionSummary">Drought distribution will appear here once a district is selected.</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+let selectedMetric = 'drought';
+let selectedDistrict = '';
+let selectedYear = '';
+let districtDirectory = [];
+let availableYears = [];
+let districtBoundaryGeoJson = null;
+let geojsonLayer = null;
+let leafletMap = null;
+let legendControl = null;
+let miniRainfallChart = null;
+let miniTempChart = null;
+let miniDroughtChart = null;
+let metricRankings = { drought: [], rainfall: [], temperature: [] };
+const DEFAULT_MAP_YEAR = '{{ dashboard_latest_year|default("") }}';
+const climateMonthly = window.ClimateMonthly || {};
+const MONTHS = Array.isArray(climateMonthly.CANONICAL_MONTHS)
+    ? climateMonthly.CANONICAL_MONTHS.slice()
+    : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DISTRICT_GEOJSON_SOURCES = [
+    '/static/data/zambia_districts.geojson',
+    {% if district_geojson_url %}'{{ district_geojson_url }}'{% else %}null{% endif %}
+].filter(Boolean);
+
+const METRIC_META = {
+    drought: {
+        label: 'Drought level',
+        unit: 'score',
+        colors: ['#d9f99d', '#fef08a', '#fdba74', '#f97316', '#7f1d1d'],
+        legendLabels: ['None', 'Abnormally dry', 'Moderate drought', 'Severe drought', 'Extreme drought']
+    },
+    rainfall: {
+        label: 'Rainfall',
+        unit: 'mm',
+        colors: ['#f7fbff', '#deebf7', '#9ecae1', '#3182bd', '#08519c'],
+        legendLabels: ['Trace / none', 'Very light', 'Moderate', 'Heavy', 'Very heavy']
+    },
+    temperature: {
+        label: 'Temperature',
+        unit: '°C',
+        colors: ['#ffffcc', '#ffeda0', '#feb24c', '#f03b20', '#bd0026'],
+        legendLabels: ['Cold', 'Cool', 'Mild', 'Warm / hot', 'Extreme heat']
+    },
+};
+const DROUGHT_SEVERITY_META = {
+    'No Drought': { label: 'No drought', color: '#f7f7f7', score: 0 },
+    Mild: { label: 'Mild', color: '#ffff00', score: 1 },
+    Moderate: { label: 'Moderate', color: '#fbd48b', score: 2 },
+    Severe: { label: 'Severe', color: '#f26d22', score: 3 },
+    Extreme: { label: 'Extreme', color: '#730000', score: 4 }
+};
+const DROUGHT_SEVERITY_ORDER = ['No Drought', 'Mild', 'Moderate', 'Severe', 'Extreme'];
+
+function normalizeDroughtSeverityName(value) {
+    const text = String(value || '').trim().toLowerCase();
+    if (!text) return '';
+    if (text.includes('extreme')) return 'Extreme';
+    if (text.includes('severe')) return 'Severe';
+    if (text.includes('moderate')) return 'Moderate';
+    if (text.includes('mild') || text.includes('abnormal')) return 'Mild';
+    if (text.includes('none') || text.includes('normal') || text.includes('no drought')) return 'No Drought';
+    return String(value || '').trim();
+}
+
+function getMetricMeta(metric = selectedMetric) {
+    return METRIC_META[metric] || METRIC_META.drought;
+}
+
+function normalizeStr(value) {
+    return String(value || '').toLowerCase().trim();
+}
+
+function getRankingName(item) {
+    return item?.district || item?.province || item?.name || '';
+}
+
+function findRankingEntry(district, metric = selectedMetric) {
+    return (metricRankings[metric] || []).find(item => normalizeStr(getRankingName(item)) === normalizeStr(district));
+}
+
+function getMetricValue(district, metric = selectedMetric) {
+    const entry = findRankingEntry(district, metric);
+    return entry ? Number(entry.value) : null;
+}
+
+function getMetricValues(metric = selectedMetric) {
+    return (metricRankings[metric] || []).map(item => Number(item.value)).filter(Number.isFinite).sort((a, b) => a - b);
+}
+
+function getMetricBreaks(metric = selectedMetric) {
+    if (metric === 'drought') return [0.5, 1.5, 2.5, 3.5];
+    const values = getMetricValues(metric);
+    if (!values.length) return [];
+    const pick = ratio => values[Math.min(values.length - 1, Math.floor((values.length - 1) * ratio))];
+    return [pick(0.2), pick(0.4), pick(0.6), pick(0.8)];
+}
+
+function getDistrictColor(district) {
+    const value = getMetricValue(district);
+    if (!Number.isFinite(value)) return '#e5e7eb';
+    const breaks = getMetricBreaks();
+    const colors = getMetricMeta().colors;
+    if (!breaks.length) return colors[2];
+    if (value >= breaks[3]) return colors[4];
+    if (value >= breaks[2]) return colors[3];
+    if (value >= breaks[1]) return colors[2];
+    if (value >= breaks[0]) return colors[1];
+    return colors[0];
+}
+
+function formatMetricValue(metric, value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return 'No data';
+    if (metric === 'temperature') return `${number.toFixed(1)}°C`;
+    if (metric === 'rainfall') return `${number.toFixed(0)} mm`;
+    if (metric === 'drought') return formatDroughtScore(number);
+    return number.toFixed(2);
+}
+
+function formatDroughtScore(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return 'No data';
+    const label = number >= 3.5 ? 'Extreme' :
+        number >= 2.5 ? 'Severe' :
+        number >= 1.5 ? 'Moderate' :
+        number >= 0.5 ? 'Mild' :
+        'No drought';
+    return `${label} (${number.toFixed(2)})`;
+}
+
+function formatDecimal(value, digits = 1) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : '--';
+}
+
+function buildQuery(params) {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) query.set(key, value);
+    });
+    const text = query.toString();
+    return text ? `?${text}` : '';
+}
+
+function getDefaultMapYear() {
+    const templateYear = Number(DEFAULT_MAP_YEAR);
+    if (Number.isFinite(templateYear)) return String(templateYear);
+    const portalYear = Number(window.portalDefaultYear);
+    if (Number.isFinite(portalYear)) return String(portalYear);
+    return availableYears.length ? String(Math.max(...availableYears)) : '2024';
+}
+
+function getSelectedYear() {
+    const selected = document.getElementById('mapYear')?.value;
+    if (selected) return selected;
+    if (selectedYear) return selectedYear;
+    return getDefaultMapYear();
+}
+
+function sendMapNotification(type, title, message, options = {}) {
+    const node = document.getElementById('mapNotification');
+    if (!node) return;
+    node.className = `map-notification show ${type}`;
+    node.innerHTML = `<strong>${title}:</strong> ${message}`;
+    if (options.duration) {
+        window.setTimeout(() => {
+            node.className = 'map-notification';
+            node.textContent = '';
+        }, options.duration);
+    }
+}
+
+function setInteractiveMapNotice(message = '') {
+    const notice = document.getElementById('interactiveMapNotice');
+    if (!notice) return;
+    notice.textContent = message;
+    notice.style.display = message ? 'block' : 'none';
+}
+
+function normalizeDistrictInput(value) {
+    const raw = (value || '').trim();
+    if (!raw) return '';
+    const allDistricts = districtDirectory.flatMap(group => group.districts || []);
+    return allDistricts.find(district => normalizeStr(district) === normalizeStr(raw)) || raw;
+}
+
+function getMapSearchInput() {
+    return document.getElementById('mapDistrictSearch');
+}
+
+function setMapSearchValue(value = '') {
+    const input = getMapSearchInput();
+    if (input) input.value = value;
+}
+
+function populateMapDistrictSuggestions() {
+    const suggestionList = document.getElementById('mapDistrictSuggestions');
+    if (!suggestionList) return;
+    const districts = districtDirectory.flatMap(group => group.districts || []);
+    suggestionList.innerHTML = districts
+        .sort((a, b) => a.localeCompare(b))
+        .map(district => `<option value="${district}"></option>`)
+        .join('');
+}
+
+async function handleDistrictSearchSelection() {
+    const input = getMapSearchInput();
+    const requested = normalizeDistrictInput(input?.value || '');
+    if (!requested) {
+        selectedDistrict = '';
+        renderMap();
+        resetDistrictDetailPanel();
+        return;
+    }
+
+    const allDistricts = districtDirectory.flatMap(group => group.districts || []);
+    const match = allDistricts.find(district => normalizeStr(district) === normalizeStr(requested));
+    if (!match) {
+        sendMapNotification('info', 'District not found', `No district matched "${requested}".`, { duration: 3500 });
+        return;
+    }
+
+    selectedDistrict = match;
+    setMapSearchValue(match);
+    renderMap();
+    await loadDistrictDetails();
+}
+
+function getRequestedDistrictFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const district = params.get('district');
+    if (district) return normalizeDistrictInput(district);
+    const province = params.get('province');
+    if (!province) return '';
+    const provinceGroup = districtDirectory.find(group => normalizeStr(group.province) === normalizeStr(province));
+    return provinceGroup?.districts?.[0] || '';
+}
+
+function getFeatureDistrictName(feature) {
+    const props = feature?.properties || {};
+    const candidates = [
+        props.district, props.DISTRICT, props.District, props.NAME2, props.NAME_2,
+        props.NAME, props.name, props.ADM2_EN, props.admin2Name, props.shapeName
+    ];
+    const match = candidates.find(value => typeof value === 'string' && value.trim());
+    return match ? match.trim() : '';
+}
+
+async function loadDistrictBoundaryGeoJson() {
+    for (const source of DISTRICT_GEOJSON_SOURCES) {
+        try {
+            const response = await fetch(source);
+            if (!response.ok) continue;
+            return await response.json();
+        } catch (error) {
+            continue;
+        }
+    }
+    return null;
+}
+
+function getFeatureStyle(feature) {
+    const district = getFeatureDistrictName(feature);
+    const isSelected = selectedDistrict && normalizeStr(district) === normalizeStr(selectedDistrict);
+    return {
+        fillColor: getDistrictColor(district),
+        fillOpacity: getMetricValue(district) === null ? 0.35 : 0.82,
+        weight: isSelected ? 2.4 : 1,
+        color: isSelected ? '#102a43' : '#fff',
+        opacity: 0.9
+    };
+}
+
+function onEachFeature(feature, layer) {
+    const district = getFeatureDistrictName(feature);
+    if (!district) return;
+    layer.on({
+        mouseover(event) {
+            event.target.setStyle({ weight: 2, color: '#102a43', fillOpacity: 0.95 });
+            const value = getMetricValue(district);
+            layer.bindTooltip(`<strong>${district}</strong><br>${getMetricMeta().label}: ${formatMetricValue(selectedMetric, value)}`, {
+                className: 'district-hover-tooltip',
+                sticky: true
+            }).openTooltip();
+        },
+        mouseout(event) {
+            if (geojsonLayer) geojsonLayer.resetStyle(event.target);
+            layer.closeTooltip();
+        },
+        click() {
+            selectedDistrict = district;
+            setMapSearchValue(district);
+            renderMap();
+            loadDistrictDetails();
+        }
+    });
+    const value = getMetricValue(district);
+    layer.bindPopup(`<strong>${district}</strong>${getMetricMeta().label}: ${formatMetricValue(selectedMetric, value)}<br><span class="popup-meaning">Select this district to load detailed rainfall, temperature, and drought context.</span>`);
+}
+
+function initializeLeafletMap() {
+    if (!window.L || leafletMap) return;
+    leafletMap = L.map('districtMap', { center: [-13.2, 27.9], zoom: 5.5, scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(leafletMap);
+}
+
+function buildLegend() {
+    if (legendControl && leafletMap) {
+        leafletMap.removeControl(legendControl);
+        legendControl = null;
+    }
+    const legendPanel = document.getElementById('mapLegendPanel');
+    if (!legendPanel) return;
+    const meta = getMetricMeta();
+    const breaks = getMetricBreaks();
+    legendPanel.innerHTML = `<div class="legend"><h6>${meta.label}</h6><div class="legend-grid">${meta.colors.map((color, index) => {
+        const label = selectedMetric === 'drought'
+            ? meta.legendLabels[index]
+            : breaks.length
+            ? (index === 0 ? `< ${formatMetricValue(selectedMetric, breaks[0])}` :
+                index === 4 ? `>= ${formatMetricValue(selectedMetric, breaks[3])}` :
+                `${formatMetricValue(selectedMetric, breaks[index - 1])} - ${formatMetricValue(selectedMetric, breaks[index])}`)
+            : meta.legendLabels[index];
+        return `<div class="legend-row"><span class="legend-swatch" style="background:${color}"></span>${label}</div>`;
+    }).join('')}</div></div>`;
+}
+
+function updateMetricButtons() {
+    document.querySelectorAll('[data-map-metric]').forEach(button => {
+        button.classList.toggle('active', button.dataset.mapMetric === selectedMetric);
+    });
+    const help = document.getElementById('interactiveMapHelp');
+    if (help) {
+        help.innerHTML = `<i class="fas fa-circle-info"></i> Showing ${getMetricMeta().label.toLowerCase()} by district for ${getSelectedYear()}. Darker colours indicate stronger values.`;
+    }
+}
+
+function renderMap() {
+    updateMetricButtons();
+    if (!window.L) {
+        setInteractiveMapNotice('Leaflet could not load for the interactive map.');
+        return;
+    }
+    initializeLeafletMap();
+    if (geojsonLayer) geojsonLayer.remove();
+    if (!districtBoundaryGeoJson) {
+        setInteractiveMapNotice('District boundaries are missing. Add static/data/zambia_districts.geojson or set an online GeoJSON URL to shade full district polygons.');
+        buildLegend();
+        return;
+    }
+    setInteractiveMapNotice('');
+    geojsonLayer = L.geoJSON(districtBoundaryGeoJson, {
+        style: getFeatureStyle,
+        onEachFeature
+    }).addTo(leafletMap);
+    buildLegend();
+}
+
+function showDetailPanel() {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('districtDetail').style.display = 'flex';
+}
+
+function hideDetailPanel() {
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('districtDetail').style.display = 'none';
+}
+
+function resetDistrictDetailPanel() {
+    hideDetailPanel();
+    updatePlainSummaryLabel();
+    updateMetricCardFocus();
+    ['mapRainfallStat', 'mapTempMaxStat', 'mapTempMinStat', 'mapTempRangeStat', 'mapDroughtStat'].forEach(id => {
+        const node = document.getElementById(id);
+        if (node) node.textContent = '--';
+    });
+    const droughtSummary = document.getElementById('droughtConditionSummary');
+    if (droughtSummary) droughtSummary.textContent = 'Drought distribution will appear here once a district is selected.';
+    ['droughtRiskScore', 'droughtModerateShare', 'droughtSevereShare'].forEach(id => {
+        const node = document.getElementById(id);
+        if (node) node.textContent = '--';
+    });
+}
+
+function setStatus(id, status, label) {
+    const node = document.getElementById(id);
+    if (!node) return;
+    node.className = `mc-status status-${status || 'neutral'}`;
+    node.textContent = label || '--';
+}
+
+function interpretRainfall(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return { status: 'neutral', label: 'No data' };
+    if (number < 400) return { status: 'concern', label: 'Very dry' };
+    if (number < 700) return { status: 'caution', label: 'Below average' };
+    if (number < 1000) return { status: 'neutral', label: 'Near average' };
+    return { status: 'good', label: 'Good rainfall' };
+}
+
+function interpretTempMax(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return { status: 'neutral', label: 'No data' };
+    if (number < 24) return { status: 'good', label: 'Cool' };
+    if (number < 28) return { status: 'neutral', label: 'Moderate' };
+    if (number < 32) return { status: 'caution', label: 'Warm' };
+    return { status: 'concern', label: 'Very hot' };
+}
+
+function interpretTempRange(maxValue, minValue) {
+    const max = Number(maxValue);
+    const min = Number(minValue);
+    if (!Number.isFinite(max) || !Number.isFinite(min)) return { status: 'neutral', label: 'No data' };
+    const range = max - min;
+    if (range < 8) return { status: 'good', label: 'Stable' };
+    if (range < 14) return { status: 'neutral', label: 'Moderate swing' };
+    if (range < 20) return { status: 'caution', label: 'Wide swing' };
+    return { status: 'concern', label: 'Very wide swing' };
+}
+
+function getTempRange(summary) {
+    const max = Number(summary?.avg_temp_max);
+    const min = Number(summary?.avg_temp_min);
+    return Number.isFinite(max) && Number.isFinite(min) ? max - min : null;
+}
+
+function interpretDrought(value) {
+    const text = String(value || '').trim();
+    if (!text || text === '--') return { status: 'neutral', label: 'No data' };
+    if (/extreme|severe/i.test(text)) return { status: 'concern', label: text };
+    if (/moderate|mild/i.test(text)) return { status: 'caution', label: text };
+    if (/none|normal|low/i.test(text)) return { status: 'good', label: text };
+    return { status: 'neutral', label: text };
+}
+
+function calculateDroughtMetrics(data) {
+    const sourceRows = Array.isArray(data) ? data : [];
+    const rows = DROUGHT_SEVERITY_ORDER.map(severity => {
+        const match = sourceRows.find(item => normalizeDroughtSeverityName(item?.severity) === severity);
+        const count = Number(match?.count) || 0;
+        return {
+            severity,
+            label: DROUGHT_SEVERITY_META[severity].label,
+            score: DROUGHT_SEVERITY_META[severity].score,
+            color: DROUGHT_SEVERITY_META[severity].color,
+            count
+        };
+    });
+    const total = rows.reduce((sum, item) => sum + item.count, 0);
+    const scoreTotal = rows.reduce((sum, item) => sum + (item.count * item.score), 0);
+    const dominant = rows
+        .filter(item => item.count > 0)
+        .sort((a, b) => b.count - a.count || b.score - a.score)[0] || null;
+    const moderateOrWorse = rows.filter(item => item.score >= 2).reduce((sum, item) => sum + item.count, 0);
+    const severeOrWorse = rows.filter(item => item.score >= 3).reduce((sum, item) => sum + item.count, 0);
+    return {
+        rows: rows.filter(item => item.count > 0),
+        total,
+        dominant,
+        averageScore: total ? scoreTotal / total : null,
+        moderatePct: total ? Math.round((moderateOrWorse / total) * 100) : null,
+        severePct: total ? Math.round((severeOrWorse / total) * 100) : null
+    };
+}
+
+function buildPlainSummary(summary, drought, droughtMetrics = null) {
+    const rain = Number(summary.avg_rainfall);
+    const minTemp = Number(summary.avg_temp_min);
+    const temp = Number(summary.avg_temp_max);
+    const year = getSelectedYear();
+
+    if (selectedMetric === 'drought') {
+        const dominant = droughtMetrics?.dominant;
+        const severePct = Number.isFinite(Number(droughtMetrics?.severePct)) ? Number(droughtMetrics.severePct) : null;
+        const moderatePct = Number.isFinite(Number(droughtMetrics?.moderatePct)) ? Number(droughtMetrics.moderatePct) : null;
+        if (dominant) {
+            const detail = severePct !== null && severePct > 0
+                ? `${severePct}% of records were severe or worse`
+                : moderatePct !== null && moderatePct > 0
+                ? `${moderatePct}% of records were moderate drought or worse`
+                : 'drought pressure stayed limited in the recorded observations';
+            return `In ${year}, ${selectedDistrict} was mainly under ${dominant.label.toLowerCase()} drought conditions, and ${detail}.`;
+        }
+    }
+
+    if (selectedMetric === 'rainfall') {
+        if (Number.isFinite(rain)) {
+            const rainfallStatus = interpretRainfall(rain).label.toLowerCase();
+            return `In ${year}, ${selectedDistrict} recorded about ${formatDecimal(rain, 0)} mm of rainfall, which reads as ${rainfallStatus} in this district view.`;
+        }
+    }
+
+    if (selectedMetric === 'temperature') {
+        if (Number.isFinite(temp)) {
+            const range = Number.isFinite(temp) && Number.isFinite(minTemp) ? temp - minTemp : null;
+            const tempStatus = interpretTempMax(temp).label.toLowerCase();
+            const rangeText = range === null ? 'temperature range data is limited' : `the day-to-night range was about ${formatDecimal(range)} C`;
+            return `In ${year}, ${selectedDistrict} had an average maximum temperature of ${formatDecimal(temp)} C, indicating ${tempStatus} conditions, and ${rangeText}.`;
+        }
+    }
+
+    const parts = [];
+    if (Number.isFinite(rain)) parts.push(`rainfall averaged ${formatDecimal(rain, 0)} mm`);
+    if (Number.isFinite(temp)) parts.push(`average maximum temperature was ${formatDecimal(temp)} C`);
+    if (drought && drought !== '--') parts.push(`dominant drought condition was ${String(drought).toLowerCase()}`);
+    if (!parts.length) return 'Data is limited for this selection. Try another district or year.';
+    return `In ${year}, ${selectedDistrict}: ${parts.join(', ')}.`;
+}
+
+function buildSelectedMetricSummary(summary, droughtMetrics = null, districtProvince = '') {
+    const locationLabel = `${selectedDistrict} District${districtProvince ? `, ${districtProvince} Province` : ''}`;
+    const year = getSelectedYear();
+
+    if (selectedMetric === 'drought') {
+        const dominant = droughtMetrics?.dominant;
+        const total = Number(droughtMetrics?.total) || 0;
+        const dominantPct = dominant && total ? Math.round((dominant.count / total) * 100) : null;
+        const moderatePct = Number.isFinite(Number(droughtMetrics?.moderatePct)) ? Number(droughtMetrics.moderatePct) : null;
+        const severePct = Number.isFinite(Number(droughtMetrics?.severePct)) ? Number(droughtMetrics.severePct) : null;
+
+        if (dominant && dominantPct !== null) {
+            const riskText = severePct !== null && severePct > 0
+                ? ` Severe-or-worse drought made up ${severePct}% of records.`
+                : moderatePct !== null
+                ? ` Moderate-or-worse drought made up ${moderatePct}% of records.`
+                : '';
+            return `${locationLabel} in ${year}: ${dominantPct}% of records show ${dominant.label.toLowerCase()} drought conditions.${riskText}`;
+        }
+    }
+
+    if (selectedMetric === 'rainfall') {
+        const rainfall = Number(summary?.avg_rainfall);
+        const rainfallStatus = interpretRainfall(rainfall);
+        if (Number.isFinite(rainfall)) {
+            return `${locationLabel} in ${year}: rainfall averaged ${formatDecimal(rainfall, 0)} mm, which is ${rainfallStatus.label.toLowerCase()} for this district.`;
+        }
+    }
+
+    if (selectedMetric === 'temperature') {
+        const tempMax = Number(summary?.avg_temp_max);
+        const tempStatus = interpretTempMax(tempMax);
+        if (Number.isFinite(tempMax)) {
+            return `${locationLabel} in ${year}: average maximum temperature was ${formatDecimal(tempMax)} C, indicating ${tempStatus.label.toLowerCase()} conditions.`;
+        }
+    }
+
+    return `Showing climate data for ${locationLabel} in ${year}.`;
+}
+
+function updatePlainSummaryLabel() {
+    const label = document.getElementById('plainSummaryLabel');
+    if (!label) return;
+    const text = selectedMetric === 'drought'
+        ? 'Drought insight'
+        : selectedMetric === 'rainfall'
+        ? 'Rainfall insight'
+        : selectedMetric === 'temperature'
+        ? 'Temperature insight'
+        : 'What does this mean?';
+    label.innerHTML = `<i class="fas fa-comment-dots"></i> ${text}`;
+}
+
+function updateMetricCardFocus() {
+    document.querySelectorAll('[data-focus-metric]').forEach(card => {
+        const matches = card.dataset.focusMetric === selectedMetric;
+        card.classList.toggle('active-focus', matches);
+        card.classList.toggle('muted-focus', !matches);
+    });
+}
+
+function resolveChartLabels(data) {
+    if (data?.period_type === 'month' && typeof climateMonthly.resolveLabels === 'function') {
+        return climateMonthly.resolveLabels(data);
+    }
+    return Array.isArray(data?.years) && data.years.length ? data.years : MONTHS;
+}
+
+function resolveSeries(data, key) {
+    if (data?.period_type === 'month' && typeof climateMonthly.alignSeries === 'function') {
+        return climateMonthly.alignSeries(data?.[key] || [], {
+            labels: data?.years || data?.labels || [],
+            monthNumbers: data?.month_numbers || []
+        });
+    }
+    return data?.[key] || [];
+}
+
+function renderRainfallChart(data) {
+    if (miniRainfallChart) miniRainfallChart.destroy();
+    miniRainfallChart = new Chart(document.getElementById('miniRainfallChart'), {
+        type: data?.period_type === 'month' ? 'bar' : 'line',
+        data: {
+            labels: resolveChartLabels(data),
+            datasets: [{
+                data: resolveSeries(data, 'avg_rainfall'),
+                backgroundColor: 'rgba(14, 165, 233, 0.65)',
+                borderColor: '#0ea5e9',
+                borderRadius: 3,
+                borderSkipped: false,
+                tension: 0.3,
+                fill: false
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+}
+
+function renderTemperatureChart(data) {
+    if (miniTempChart) miniTempChart.destroy();
+    miniTempChart = new Chart(document.getElementById('miniTempChart'), {
+        type: 'line',
+        data: {
+            labels: resolveChartLabels(data),
+            datasets: [
+                { label: 'Max', data: resolveSeries(data, 'avg_max_temp'), borderColor: '#ef4444', borderWidth: 1.5, pointRadius: 2, tension: 0.3, fill: false },
+                { label: 'Min', data: resolveSeries(data, 'avg_min_temp'), borderColor: '#3b82f6', borderWidth: 1.5, pointRadius: 2, tension: 0.3, fill: false }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { font: { size: 9 }, boxWidth: 12, padding: 8 } } } }
+    });
+}
+
+function renderDroughtChart(data) {
+    if (miniDroughtChart) miniDroughtChart.destroy();
+    const droughtMetrics = calculateDroughtMetrics(data);
+    const rows = droughtMetrics.rows;
+    const summaryNode = document.getElementById('droughtConditionSummary');
+    const riskScoreNode = document.getElementById('droughtRiskScore');
+    const moderateNode = document.getElementById('droughtModerateShare');
+    const severeNode = document.getElementById('droughtSevereShare');
+
+    if (!rows.length) {
+        if (summaryNode) summaryNode.textContent = 'No drought condition records are available for this district and year.';
+        if (riskScoreNode) riskScoreNode.textContent = '--';
+        if (moderateNode) moderateNode.textContent = '--';
+        if (severeNode) severeNode.textContent = '--';
+        miniDroughtChart = new Chart(document.getElementById('miniDroughtChart'), {
+            type: 'pie',
+            data: { labels: ['No data'], datasets: [{ data: [0], backgroundColor: ['#e5e7eb'], borderWidth: 0 }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } }
+            }
+        });
+        return;
+    }
+
+    const total = droughtMetrics.total;
+    const dominant = droughtMetrics.dominant;
+    const dominantPct = total ? Math.round((dominant.count / total) * 100) : 0;
+    const severePct = droughtMetrics.severePct || 0;
+    const moderatePct = droughtMetrics.moderatePct || 0;
+
+    if (summaryNode) {
+        const riskPhrase = severePct >= 25 ? 'High drought stress is present in this selection.' :
+            moderatePct >= 25 ? 'Drought pressure is building and should be watched.' :
+            'Drought pressure is limited in the selected records.';
+        summaryNode.textContent = `${dominant.label} is the main condition (${dominantPct}% of records). ${riskPhrase}`;
+    }
+    if (riskScoreNode) riskScoreNode.textContent = `${formatDecimal(droughtMetrics.averageScore, 2)} / 4`;
+    if (moderateNode) moderateNode.textContent = `${moderatePct}%`;
+    if (severeNode) severeNode.textContent = `${severePct}%`;
+
+    miniDroughtChart = new Chart(document.getElementById('miniDroughtChart'), {
+        type: 'pie',
+        data: {
+            labels: rows.map(item => item.label),
+            datasets: [{
+                data: rows.map(item => item.count),
+                backgroundColor: rows.map(item => item.color),
+                borderColor: rows.map(item => item.severity === 'No Drought' ? '#cbd5e1' : '#ffffff'),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 4, right: 4, bottom: 18, left: 4 }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label(context) {
+                            const count = Number(context.raw) || 0;
+                            const percent = total ? Math.round((count / total) * 100) : 0;
+                            return `${count} records (${percent}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateStatuses(summary, drought, droughtMetrics = null) {
+    const rainfall = interpretRainfall(summary.avg_rainfall);
+    const tempMax = interpretTempMax(summary.avg_temp_max);
+    const tempMin = Number.isFinite(Number(summary.avg_temp_min))
+        ? { status: 'neutral', label: `${formatDecimal(summary.avg_temp_min)}°C avg` }
+        : { status: 'neutral', label: 'No data' };
+    const tempRange = interpretTempRange(summary.avg_temp_max, summary.avg_temp_min);
+    const droughtStatus = interpretDrought(drought);
+    setStatus('rainfallStatus', rainfall.status, rainfall.label);
+    setStatus('tempMaxStatus', tempMax.status, tempMax.label);
+    setStatus('tempMinStatus', tempMin.status, tempMin.label);
+    setStatus('tempRangeStatus', tempRange.status, tempRange.label);
+    setStatus('droughtStatus', droughtStatus.status, droughtStatus.label);
+    updatePlainSummaryLabel();
+    updateMetricCardFocus();
+    document.getElementById('plainSummaryText').textContent = buildPlainSummary(summary, drought, droughtMetrics);
+}
+
+async function loadDistrictDetails() {
+    if (!selectedDistrict) {
+        resetDistrictDetailPanel();
+        return;
+    }
+    try {
+        const year = getSelectedYear();
+        const [summaryRes, rainfallRes, temperatureRes, droughtRes] = await Promise.all([
+            fetch(`/api/v1/district-summary${buildQuery({ district: selectedDistrict, year })}`).then(response => response.json()),
+            fetch(`/api/v1/rainfall-trend${buildQuery({ district: selectedDistrict, year })}`).then(response => response.json()),
+            fetch(`/api/v1/temperature-trend${buildQuery({ district: selectedDistrict, year })}`).then(response => response.json()),
+            fetch(`/api/v1/drought-summary${buildQuery({ district: selectedDistrict, year })}`).then(response => response.json())
+        ]);
+        const summary = summaryRes.data || {};
+        const rainfall = rainfallRes.data || {};
+        const temperature = temperatureRes.data || {};
+        const drought = Array.isArray(droughtRes.data) ? droughtRes.data : [];
+        const droughtMetrics = calculateDroughtMetrics(drought);
+        const dominantDrought = droughtMetrics.dominant?.label || summary.drought_severity || '--';
+        const districtProvince = summary.province || districtDirectory.find(group => group.districts.includes(selectedDistrict))?.province || '';
+
+        document.getElementById('panelDistrictName').textContent = selectedDistrict;
+        document.getElementById('panelProvinceName').textContent = districtProvince ? `${districtProvince} Province` : '';
+        document.getElementById('panelYearBadge').innerHTML = `<i class="fas fa-calendar"></i> ${year} &middot; ${getMetricMeta().label}`;
+        document.getElementById('districtSummaryText').textContent = buildSelectedMetricSummary(summary, droughtMetrics, districtProvince);
+        document.getElementById('mapRainfallStat').textContent = `${formatDecimal(summary.avg_rainfall, 0)} mm`;
+        document.getElementById('mapTempMaxStat').textContent = `${formatDecimal(summary.avg_temp_max)} °C`;
+        document.getElementById('mapTempMinStat').textContent = `${formatDecimal(summary.avg_temp_min)} °C`;
+        const range = getTempRange(summary);
+        document.getElementById('mapTempRangeStat').textContent = range === null ? '--' : `${formatDecimal(range)} C`;
+        document.getElementById('mapDroughtStat').textContent = dominantDrought;
+
+        updateStatuses(summary, dominantDrought, droughtMetrics);
+        showDetailPanel();
+        renderRainfallChart(rainfall);
+        renderTemperatureChart(temperature);
+        renderDroughtChart(drought);
+    } catch (error) {
+        console.error('District detail load error:', error);
+        sendMapNotification('danger', 'Data unavailable', 'District climate data could not be loaded right now.', { duration: 5000 });
+    }
+}
+
+async function loadMetricRankings() {
+    const year = getSelectedYear();
+    const metrics = ['drought', 'rainfall', 'temperature'];
+    const responses = await Promise.all(metrics.map(metric =>
+        fetch(`/api/v1/rankings/${metric}?year=${year}&scope=district`)
+            .then(response => response.json())
+            .catch(() => ({ data: { rankings: [] } }))
+    ));
+    metricRankings = metrics.reduce((acc, metric, index) => {
+        acc[metric] = responses[index]?.data?.rankings || [];
+        return acc;
+    }, { drought: [], rainfall: [], temperature: [] });
+}
+
+async function initializeMapPage() {
+    const [directoryRes, yearsRes] = await Promise.all([
+        fetch('/api/v1/district-directory').then(response => response.json()).catch(() => ({ data: [] })),
+        fetch('/api/v1/years').then(response => response.json()).catch(() => ({ data: [] }))
+    ]);
+    districtDirectory = Array.isArray(directoryRes?.data)
+        ? directoryRes.data.reduce((groups, item) => {
+            if (!item?.district || !item?.province) return groups;
+            const existing = groups.find(group => group.province === item.province);
+            if (existing) existing.districts.push(item.district);
+            else groups.push({ province: item.province, districts: [item.district] });
+            return groups;
+        }, []).map(group => ({ ...group, districts: group.districts.sort() })).sort((a, b) => a.province.localeCompare(b.province))
+        : [];
+    populateMapDistrictSuggestions();
+    availableYears = Array.isArray(yearsRes?.data) ? yearsRes.data.map(Number).filter(Number.isFinite) : [];
+    selectedYear = getSelectedYear();
+    document.getElementById('mapYear').value = selectedYear;
+    selectedDistrict = getRequestedDistrictFromUrl();
+    setMapSearchValue(selectedDistrict);
+    await loadMetricRankings();
+    districtBoundaryGeoJson = await loadDistrictBoundaryGeoJson();
+    resetDistrictDetailPanel();
+    renderMap();
+    if (selectedDistrict) {
+        await loadDistrictDetails();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await initializeMapPage();
+    } catch (error) {
+        console.error('Map init failed:', error);
+        sendMapNotification('danger', 'Map unavailable', 'The map could not load. Please refresh the page.', { duration: 8000 });
+        return;
+    }
+
+    document.querySelectorAll('[data-map-metric]').forEach(button => {
+        button.addEventListener('click', async () => {
+            selectedMetric = button.dataset.mapMetric || 'drought';
+            renderMap();
+            if (selectedDistrict) await loadDistrictDetails();
+        });
+    });
+
+    document.getElementById('mapYear').addEventListener('change', async () => {
+        selectedYear = getSelectedYear();
+        await loadMetricRankings();
+        renderMap();
+        if (selectedDistrict) await loadDistrictDetails();
+        sendMapNotification('info', 'Year updated', `Now showing data for ${selectedYear}.`, { duration: 3000 });
+    });
+
+    const districtSearchInput = getMapSearchInput();
+    if (districtSearchInput) {
+        districtSearchInput.addEventListener('change', async () => {
+            await handleDistrictSearchSelection();
+        });
+        districtSearchInput.addEventListener('keydown', async (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            await handleDistrictSearchSelection();
+        });
+    }
+});
+</script>
+{% endblock %}

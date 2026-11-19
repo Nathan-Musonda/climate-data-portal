@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Climate Data Visualization Portal
 
 ## Problem Statement
@@ -62,9 +61,9 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 Copy-Item .env.example .env
-python scripts\init_db.py
-python scripts\migrate_data_fixed.py
-python app.py
+python backend\scripts\init_db.py
+python backend\scripts\migrate_data_fixed.py
+python -m backend.app
 ```
 
 The app runs at:
@@ -78,28 +77,50 @@ http://localhost:5000
 The portal can generate a schema-compatible CSV from free public sources using Zambia district boundaries and the Open-Meteo historical archive:
 
 ```powershell
-python scripts\build_free_source_dataset.py --start-year 2015 --end-year 2025 --output data\processed\free_sources_zambia_climate_data.csv
-python scripts\migrate_data_fixed.py data\processed\free_sources_zambia_climate_data.csv
+python backend\scripts\build_free_source_dataset.py --start-year 2015 --end-year 2025 --output backend\data\processed\free_sources_zambia_climate_data.csv
+python backend\scripts\migrate_data_fixed.py backend\data\processed\free_sources_zambia_climate_data.csv
 ```
 
-Open-Meteo may rate-limit full-country runs. The builder caches successful district downloads in `data/raw/free_source_cache`, so rerunning resumes from cache. For gentler batches:
+### Integrating Multiple Data Sources
+
+Use `backend\scripts\integrate_data.py` when combining ZMD, NASA POWER, and portal-ready CSVs into the PostgreSQL `climate_records` table. The script standardises column names, parses dates, writes a cleaned CSV, tracks `DataSource`, and gives official ZMD rows priority when multiple sources provide the same district/date.
+
+Dry-run a cleaned CSV without touching PostgreSQL:
+
+```bash
+python backend\scripts\integrate_data.py --portal-csv backend\data\processed\free_sources_zambia_climate_data.csv --output-cleaned backend\data\processed\integrated_climate_data.csv --skip-db
+```
+
+Load ZMD CSV data, using a province fallback if the file only has station/district names:
+
+```bash
+python backend\scripts\integrate_data.py --zmd-csv backend\data\raw\zmd_temperature_2015_2025.csv --zmd-province Lusaka
+```
+
+Fetch NASA POWER point data for one district:
+
+```bash
+python backend\scripts\integrate_data.py --fetch-nasa --nasa-province Lusaka --nasa-district Lusaka --nasa-latitude -15.42 --nasa-longitude 28.28 --start-date 2015-01-01 --end-date 2025-12-31
+```
+
+Open-Meteo may rate-limit full-country runs. The builder caches successful district downloads in `backend/data/raw/free_source_cache`, so rerunning resumes from cache. For gentler batches:
 
 ```powershell
-python scripts\build_free_source_dataset.py --start-year 2015 --end-year 2025 --max-new-requests 10 --sleep-seconds 5 --output data\processed\free_sources_zambia_climate_data.csv
+python backend\scripts\build_free_source_dataset.py --start-year 2015 --end-year 2025 --max-new-requests 10 --sleep-seconds 5 --output backend\data\processed\free_sources_zambia_climate_data.csv
 ```
 
 To fetch additional free context datasets:
 
 ```powershell
-python scripts\fetch_free_context_sources.py
+python backend\scripts\fetch_free_context_sources.py
 ```
 
-This attempts WFP/HDX food prices and ReliefWeb climate-event reports, and writes a `data/raw/free_source_manifest.json` file listing automated and manual enrichment sources. MODIS NDVI, FAOSTAT, and World Bank CCKP remain source targets that usually require separate API workflows or account-backed tools such as Google Earth Engine.
+This attempts WFP/HDX food prices and ReliefWeb climate-event reports, and writes a `backend/data/raw/free_source_manifest.json` file listing automated and manual enrichment sources. MODIS NDVI, FAOSTAT, and World Bank CCKP remain source targets that usually require separate API workflows or account-backed tools such as Google Earth Engine.
 
 For a quick test, limit the run to a few districts:
 
 ```powershell
-python scripts\build_free_source_dataset.py --start-year 2024 --end-year 2024 --limit-districts 2 --output data\processed\free_sources_sample_2024.csv
+python backend\scripts\build_free_source_dataset.py --start-year 2024 --end-year 2024 --limit-districts 2 --output backend\data\processed\free_sources_sample_2024.csv
 ```
 
 This fills rainfall, temperature, humidity, evapotranspiration, wind, solar radiation, soil moisture, and computed drought indicators. NDVI, food prices, crop yield, hydropower, and event impacts should be enriched from MODIS, WFP/HDX, FAOSTAT, World Bank, and ReliefWeb sources.
@@ -109,11 +130,23 @@ This fills rainfall, temperature, humidity, evapotranspiration, wind, solar radi
 Daily updates can be fetched into the same `climate_records` table used by the portal. Put the weather key in `.env` as `DAILY_WEATHER_API_KEY` or reuse `LIVE_WEATHER_API_KEY`; do not place keys in source files.
 
 ```powershell
-python scripts\update_daily_weather.py --limit-districts 2
-python scripts\update_daily_weather.py
+python backend\scripts\update_daily_weather.py --limit-districts 2
+python backend\scripts\update_daily_weather.py
 ```
 
-Each run writes CSV snapshots to `data\processed\daily_weather_updates\` and upserts rows by `date + province + district`, so rerunning updates the same day instead of creating duplicates. The default endpoint is OpenWeather current weather; set `DAILY_WEATHER_API_URL` if you use another compatible current-weather endpoint.
+Each run writes CSV snapshots to `backend\data\processed\daily_weather_updates\` and upserts rows by `date + province + district`, so rerunning updates the same day instead of creating duplicates. The default endpoint is OpenWeather current weather; set `DAILY_WEATHER_API_URL` if you use another compatible current-weather endpoint.
+
+## Persistent Live Weather Storage
+
+Fresh `/api/v1/live-weather?lat=...&lon=...` responses are also saved to PostgreSQL in `live_weather_observations` when `LIVE_WEATHER_PERSIST_ENABLED=true`. This keeps raw current-condition snapshots for future dashboards, trend visualization, analytics, and prediction workflows without repeated manual uploads.
+
+Stored observations can be retrieved with:
+
+```powershell
+curl "http://localhost:5000/api/v1/live-weather/history?lat=-15.4167&lon=28.2833&limit=50"
+```
+
+Run `python backend\scripts\init_db.py` after pulling this change so existing databases get the new table and indexes.
 
 ## Testing
 
@@ -133,7 +166,3 @@ python -m unittest discover -s tests
 ## Project Value
 
 This portal turns climate records into accessible visual information. It helps users compare districts, inspect trends, understand drought and flood signals, and connect climate conditions to practical impacts such as population affected, crop yield, and hydropower.
-=======
-# climate-data-portal
-Climate Data Visualization Portal for Zambia
->>>>>>> e0c043d07edacf9f2601bfdf03798113da89067f

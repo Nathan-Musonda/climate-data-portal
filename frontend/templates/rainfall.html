@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}Rainfall - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.rainfall-shell { display: grid; gap: 1.1rem; max-width: 1200px; margin: 0 auto; }
+.rainfall-hero {
+    background: linear-gradient(135deg, #102A43 0%, #1F3C57 38%, #0F766E 72%, #2E7D32 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 56px rgba(15, 23, 42, 0.18);
+}
+.rainfall-hero h1,
+.rainfall-hero p { color: #fff; }
+.rainfall-hero p { max-width: 760px; opacity: 0.88; margin-bottom: 0; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 1rem; }
+.hero-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.79rem;
+}
+.how-to {
+    background: #eaf7f5;
+    border: 1px solid #b2ddd8;
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
+}
+.how-to-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f766e;
+    margin-bottom: 0.65rem;
+}
+.how-to-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.6rem;
+}
+.how-to-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #134e4a;
+    line-height: 1.5;
+}
+.how-to-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0f766e;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.rainfall-panel {
+    background: #fff;
+    border: 1px solid #e2eaf2;
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+.rainfall-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+.rainfall-panel-header h3 { margin-bottom: 0.2rem; font-size: 1.05rem; }
+.rainfall-panel-header p { margin-bottom: 0; color: #637381; font-size: 0.84rem; }
+.filter-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: #eaf4f4;
+    color: #0f766e;
+    font-size: 0.77rem;
+    font-weight: 700;
+}
+.rainfall-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+.rainfall-stat-card {
+    background: #fff;
+    border: 1px solid #e2eaf2;
+    border-radius: 14px;
+    padding: 1rem;
+    min-height: 155px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.rainfall-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+}
+.rainfall-stat-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    margin-bottom: 0.7rem;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 1rem;
+}
+.rainfall-stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #637381;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+.rainfall-stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0D3B66;
+    line-height: 1.1;
+    margin: 0.3rem 0;
+}
+.rainfall-stat-note { color: #637381; font-size: 0.79rem; margin-bottom: 0.35rem; }
+.stat-meaning {
+    font-size: 0.75rem;
+    background: #eaf7f5;
+    border-radius: 6px;
+    padding: 0.35rem 0.5rem;
+    color: #134e4a;
+    line-height: 1.45;
+    margin-top: 0.3rem;
+}
+.chart-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+.chart-card-lg {
+    background: #fff;
+    border: 1px solid #e2eaf2;
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+}
+.chart-card-lg .chart-container { height: 330px; }
+.chart-meaning {
+    margin-top: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #b2ddd8;
+    border-radius: 10px;
+    background: #eaf7f5;
+    color: #134e4a;
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+.rainfall-story {
+    margin-top: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #d7e3ee;
+    color: #334155;
+    font-size: 0.84rem;
+    line-height: 1.6;
+}
+.plain-summary-box {
+    background: #eaf7f5;
+    border-left: 4px solid #0f766e;
+    border-radius: 0 14px 14px 0;
+    padding: 1rem;
+}
+.psb-label {
+    color: #0f766e;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.45rem;
+    text-transform: uppercase;
+}
+.psb-text {
+    color: #134e4a;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+.page-note {
+    background: #fff;
+    border: 1px solid #e2eaf2;
+    border-radius: 14px;
+    padding: 1rem;
+    color: #637381;
+}
+.page-note h5 { color: #0D3B66; margin-bottom: 0.65rem; }
+@media (max-width: 1200px) {
+    .rainfall-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .chart-grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .rainfall-hero { padding: 1.1rem; border-radius: 12px; }
+    .rainfall-stats { grid-template-columns: 1fr; }
+    .chart-card-lg .chart-container { height: 240px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rainfall-shell">
+    <section class="rainfall-hero">
+        <h1 class="fw-bold mb-2"><i class="fas fa-tint me-2"></i>Rainfall in Zambia</h1>
+        <p>Explore how much rain has fallen across Zambia's provinces between 2015 and 2025, including which years were the wettest and driest, which provinces receive the most rain, and what Zambia's seasonal rainfall pattern looks like.</p>
+        <div class="hero-badges">
+            <span><i class="fas fa-chart-line"></i> Is rainfall increasing or decreasing?</span>
+            <span><i class="fas fa-calendar-alt"></i> When does the rainy season peak?</span>
+            <span><i class="fas fa-chart-bar"></i> Which provinces get the most rain?</span>
+        </div>
+    </section>
+
+    <section class="how-to">
+        <div class="how-to-title"><i class="fas fa-cloud-showers-heavy"></i> How to use this page</div>
+        <div class="how-to-steps">
+            <div class="how-to-step">
+                <div class="how-to-num">1</div>
+                <div>Select a province from the dropdown to focus on a specific area, or leave it as "All Provinces" to see the national picture.</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">2</div>
+                <div>Choose a year and click <strong>Apply</strong>. The four summary cards at the top will update to show that year's rainfall figures.</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">3</div>
+                <div>Check the trend chart first because it answers the most important question: is rainfall going up or down over time in this area?</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">4</div>
+                <div>Read the green boxes beneath each chart for plain-language explanations of what the data means for farming and water supply.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="rainfall-panel">
+        <div class="rainfall-panel-header">
+            <div>
+                <h3>Filter the data</h3>
+                <p>Choose a province, district, year, and month, or leave location filters blank to view all of Zambia.</p>
+            </div>
+            <div class="filter-summary" id="rainfallFilterSummary">
+                <i class="fas fa-sliders-h"></i>
+                <span>All Provinces, latest available year</span>
+            </div>
+        </div>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Province</label>
+                <select id="rainfallProvince" class="form-select">
+                    <option value="">All Provinces</option>
+                    {% for province in dashboard_provinces|default([]) %}
+                    <option value="{{ province }}">{{ province }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">District</label>
+                <select id="rainfallDistrict" class="form-select">
+                    <option value="">All Districts</option>
+                    {% for district in dashboard_districts|default([]) %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Year</label>
+                <select id="rainfallYear" class="form-select">
+                    <option value="">Latest complete year</option>
+                    {% for year in dashboard_years|default([]) %}
+                    <option value="{{ year }}" {% if dashboard_latest_year and year == dashboard_latest_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Month</label>
+                <select id="rainfallMonth" class="form-select">
+                    <option value="">All months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button id="rainfallApplyBtn" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i>Apply</button>
+            </div>
+            <div class="col-md-2">
+                <button id="rainfallResetBtn" class="btn btn-outline-secondary w-100">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="rainfall-stats">
+        <article class="rainfall-stat-card">
+            <div class="rainfall-stat-icon"><i class="fas fa-cloud-rain"></i></div>
+            <div class="rainfall-stat-label">Average rainfall</div>
+            <div class="rainfall-stat-value" id="avgRainfall">-- <small>mm</small></div>
+            <p class="rainfall-stat-note">The average amount of rain that fell across the selected area and year.</p>
+            <div class="stat-meaning">Zambia's national average is around 1,000 mm per year. Areas below 700 mm face serious water stress for crops and communities.</div>
+        </article>
+        <article class="rainfall-stat-card">
+            <div class="rainfall-stat-icon"><i class="fas fa-arrow-up"></i></div>
+            <div class="rainfall-stat-label">Wettest year on record</div>
+            <div class="rainfall-stat-value" id="highestRainfall">--</div>
+            <p class="rainfall-stat-note" id="highestRainfallLabel">The year with the highest total rainfall.</p>
+            <div class="stat-meaning">Very wet years can be as damaging as dry years because they increase the risk of floods, soil erosion, and crop waterlogging, especially in low-lying areas.</div>
+        </article>
+        <article class="rainfall-stat-card">
+            <div class="rainfall-stat-icon"><i class="fas fa-arrow-down"></i></div>
+            <div class="rainfall-stat-label">Driest year on record</div>
+            <div class="rainfall-stat-value" id="lowestRainfall">--</div>
+            <p class="rainfall-stat-note" id="lowestRainfallLabel">The year with the lowest total rainfall.</p>
+            <div class="stat-meaning">Dry years put severe pressure on rain-fed farming, which most Zambian smallholder farmers depend on. Even one dry year can lead to food shortages.</div>
+        </article>
+        <article class="rainfall-stat-card">
+            <div class="rainfall-stat-icon"><i class="fas fa-wave-square"></i></div>
+            <div class="rainfall-stat-label">How consistent is rainfall?</div>
+            <div class="rainfall-stat-value" id="rainfallVariability">--</div>
+            <p class="rainfall-stat-note" id="rainfallTrendDirection">How much rainfall varies from year to year.</p>
+            <div class="stat-meaning">High variability means rainfall is unpredictable: some years are very wet, while others are very dry. This makes long-term farming and water planning difficult.</div>
+        </article>
+    </section>
+
+    <section class="chart-card-lg">
+        <div class="chart-header">
+            <div class="chart-title"><i class="fas fa-chart-line me-2 text-primary"></i>Is rainfall increasing or decreasing over time?</div>
+            <div class="chart-subtitle" id="rainfallTrendSubtitle">This chart shows whether rainfall has been going up or down across the years, which is important for water and food security planning.</div>
+        </div>
+        <div class="chart-container" style="height: 390px;">
+            <canvas id="rainfallTrendChart"></canvas>
+        </div>
+        <div class="chart-meaning">
+            <i class="fas fa-arrow-trend-down me-1"></i><strong>What to look for:</strong> A downward trend means the area is getting drier over time, which is a warning sign for rain-fed agriculture and water supply. An upward trend means wetter conditions, which can increase flood risk. A flat trend means rainfall has stayed relatively consistent.
+        </div>
+    </section>
+
+    <section class="chart-grid-2">
+        <div class="chart-card-lg">
+            <div class="chart-header">
+                <div class="chart-title"><i class="fas fa-chart-column me-2 text-primary"></i>How much rain fell each year?</div>
+                <div class="chart-subtitle" id="rainfallYearlyTotalsSubtitle">Compares total rainfall for each year between 2015 and 2025, making it easy to spot the wettest and driest years.</div>
+            </div>
+            <div class="chart-container" style="height: 360px;">
+                <canvas id="rainfallYearlyTotalsChart"></canvas>
+            </div>
+            <div class="chart-meaning">
+                <i class="fas fa-calendar-days me-1"></i><strong>What to look for:</strong> Short bars mean that year was dry. Tall bars mean above-average rainfall and possible flood risk. Years that stand out at either extreme are important for understanding Zambia's climate variability.
+            </div>
+        </div>
+    </section>
+
+    <section class="chart-grid-2">
+        <div class="chart-card-lg">
+            <div class="chart-header">
+                <div class="chart-title"><i class="fas fa-cloud-showers-heavy me-2 text-info"></i>How is rainfall spread across the year?</div>
+                <div class="chart-subtitle" id="monthlyRainfallSubtitle">Shows which months carry most of the year's rainfall and which months are usually dry.</div>
+            </div>
+            <div class="chart-container" style="height: 330px;">
+                <canvas id="monthlyRainfallChart"></canvas>
+            </div>
+            <div class="rainfall-story" id="monthlyRainfallStory">
+                Loading the seasonal rainfall pattern...
+            </div>
+            <div class="chart-meaning">
+                <i class="fas fa-calendar-alt me-1"></i><strong>Zambia's rainy season</strong> runs from <strong>November to March</strong>. This is when most of the year's rainfall occurs. The dry season from May to September sees almost no rain, so shifts in timing can directly affect planting and harvesting.
+            </div>
+        </div>
+        <div class="chart-card-lg">
+            <div class="chart-header">
+                <div class="chart-title"><i class="fas fa-map-marked-alt me-2 text-success"></i>Which provinces receive the most rain?</div>
+                <div class="chart-subtitle" id="rainfallProvinceSubtitle">Compares average rainfall across all provinces for the selected year, showing where water availability is highest and lowest.</div>
+            </div>
+            <div class="chart-container" style="height: 330px;">
+                <canvas id="rainfallByProvinceChart"></canvas>
+            </div>
+            <div class="chart-meaning">
+                <i class="fas fa-map-location-dot me-1"></i><strong>What this means:</strong> Northern, Luapula, and Copperbelt provinces typically receive the most rainfall. Southern and Western provinces receive the least, making them more vulnerable to drought and more dependent on water storage, irrigation, and drought-resistant crops.
+            </div>
+        </div>
+    </section>
+
+    <section class="chart-card-lg">
+        <div class="chart-header">
+            <div class="chart-title"><i class="fas fa-chart-area me-2 text-warning"></i>How are rainfall readings distributed?</div>
+            <div class="chart-subtitle" id="rainfallDistributionSubtitle">Shows whether most rainfall readings were low, moderate, or high, giving a picture of how consistent or variable rainfall is.</div>
+        </div>
+        <div class="chart-container" style="height: 340px;">
+            <canvas id="rainfallDistributionChart"></canvas>
+        </div>
+        <div class="chart-meaning">
+            <i class="fas fa-droplet me-1"></i><strong>What to look for:</strong> If most readings cluster at the low end, the majority of days had little or no rain, which is normal for Zambia because rain falls in a short season. A wide spread means rainfall was highly variable, with very wet days mixed among many dry days. Very high single-day readings are the ones most likely to cause localised flooding.
+        </div>
+    </section>
+
+    <section class="plain-summary-box">
+        <div class="psb-label">What does Zambia's rainfall mean for everyday life?</div>
+        <p class="psb-text">More than 80% of Zambia's farming is rain-fed, meaning crops depend entirely on seasonal rainfall to grow. When the rainy season arrives late, ends early, or delivers less rain than usual, the impact is felt immediately through smaller harvests, higher food prices, and reduced water availability for drinking and livestock. Provinces in the south and west consistently receive less rain than the national average, making them the most vulnerable to drought.</p>
+    </section>
+
+    <section class="page-note">
+        <h5><i class="fas fa-info-circle me-2"></i>About this data</h5>
+        <p class="mb-2">Rainfall records cover all of Zambia's provinces from 2015 to 2025, sourced from the Zambia Meteorological Department (ZMD), the SADC Climate Services Centre, and NASA Earth Observations. All values are in millimetres (mm), the standard unit for measuring rainfall.</p>
+        <p id="rainfallNotes" class="mb-0">Use the province filter above to focus on a specific area. Data is available at both provincial and district level depending on the chart.</p>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/rainfall.js') }}?v=20260526-rainfall-record-years"></script>
+{% endblock %}

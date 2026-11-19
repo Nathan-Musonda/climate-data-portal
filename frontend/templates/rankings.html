@@ -1,0 +1,763 @@
+{% extends "base.html" %}
+
+{% block title %}District Comparison - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.compare-shell { display: grid; gap: 1rem; max-width: 1280px; margin: 0 auto; }
+.compare-hero {
+    background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 24%),
+        linear-gradient(135deg, #102A43 0%, #0F766E 58%, #2E7D32 100%);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.35rem 1.4rem;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.compare-hero h1 { color: white; margin-bottom: 0.3rem; }
+.compare-hero p { max-width: 760px; color: rgba(255,255,255,0.86); margin-bottom: 0; }
+.compare-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.compare-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.72rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.how-to {
+    background: #eaf7f5;
+    border: 1px solid #b2ddd8;
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
+}
+.how-to-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #0f766e;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.65rem;
+}
+.how-to-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.65rem;
+}
+.how-to-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    color: #134e4a;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.how-to-num {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0f766e;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+.compare-panel {
+    background: rgba(255,255,255,0.98);
+    border: 1px solid rgba(226,232,240,0.9);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 14px 35px rgba(15,23,42,0.05);
+}
+.compare-panel-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.compare-panel-header h3 { margin-bottom: 0.15rem; font-size: 1.08rem; }
+.compare-panel-header p { margin-bottom: 0; color: var(--text-muted); font-size: 0.85rem; }
+.compare-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+.compare-filter-main { grid-column: span 4; }
+.compare-filter-district {
+    grid-column: span 3;
+    position: relative;
+    padding-bottom: 1.25rem;
+}
+.compare-actions-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.25rem;
+}
+.compare-actions-note {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+.compare-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    color: #0f766e;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.compare-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.compare-stat-card {
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1rem;
+}
+.compare-stat-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+.compare-stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary);
+    line-height: 1.15;
+    margin: 0.4rem 0 0.25rem;
+}
+.compare-stat-note {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-bottom: 0;
+}
+.stat-meaning {
+    margin-top: 0.55rem;
+    padding: 0.42rem 0.55rem;
+    border-radius: 8px;
+    background: #eaf7f5;
+    color: #134e4a;
+    font-size: 0.74rem;
+    line-height: 1.45;
+}
+.compare-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.compare-chart-frame {
+    position: relative;
+    height: 380px;
+}
+.compare-chart-frame canvas {
+    position: relative;
+    z-index: 1;
+}
+.chart-empty-state {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+}
+.chart-empty-state p { font-size: 0.85rem; margin-bottom: 0; }
+.chart-empty-state.is-hidden { display: none; }
+.chart-meaning {
+    margin-top: 0.75rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #b2ddd8;
+    border-radius: 8px;
+    background: #eaf7f5;
+    color: #134e4a;
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+.compare-table-wrap { overflow-x: auto; }
+.compare-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+.compare-table th, .compare-table td {
+    padding: 0.8rem 0.75rem;
+    border-bottom: 1px solid rgba(226,232,240,0.9);
+    text-align: left;
+    vertical-align: middle;
+}
+.compare-table th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.compare-table tbody tr:hover { background: rgba(248,250,252,0.8); }
+.compare-table .is-focus {
+    background: #f0fdfa;
+    color: #0f766e;
+    font-weight: 800;
+}
+.district-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.district-selection-strip {
+    min-height: 2.3rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    margin-top: 0.9rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid rgba(226,232,240,0.95);
+    border-radius: 16px;
+}
+.district-selection-empty {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+.district-selection-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.45rem 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+.district-selection-remove {
+    width: 1.35rem;
+    height: 1.35rem;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #334155;
+    line-height: 1;
+}
+.district-selection-remove:hover { background: #cbd5e1; }
+.compare-actions {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+.compare-actions .btn { min-height: 2.4rem; min-width: 6.8rem; }
+.compare-helper {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 0.45rem;
+}
+.insight-list { display: grid; gap: 0.75rem; }
+.insight-item {
+    border: 1px solid rgba(226,232,240,0.9);
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+}
+.insight-item p { margin-bottom: 0; color: var(--text-muted); }
+.empty-state {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+.plain-summary-box {
+    padding: 0.9rem 1rem;
+    border-left: 3px solid #0f766e;
+    border-radius: 0 12px 12px 0;
+    background: #eaf7f5;
+}
+.psb-label {
+    color: #0f766e;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+}
+.psb-text {
+    color: #134e4a;
+    font-size: 0.86rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+@media (max-width: 1100px) {
+    .compare-grid-2 { grid-template-columns: 1fr; }
+    .compare-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .compare-filter-main,
+    .compare-filter-district { grid-column: span 1; }
+    .compare-actions-bar { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 900px) {
+    .compare-stats { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .compare-shell {
+        gap: 0.8rem;
+    }
+
+    .compare-hero {
+        align-items: flex-start;
+        border-radius: 12px;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .compare-hero h1 {
+        font-size: 1.35rem;
+        line-height: 1.2;
+    }
+
+    .compare-hero p {
+        font-size: 0.84rem;
+        line-height: 1.55;
+    }
+
+    .compare-badges {
+        width: 100%;
+    }
+
+    .compare-badges span,
+    .compare-badge {
+        border-radius: 10px;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .how-to,
+    .compare-panel,
+    .compare-stat-card,
+    .plain-summary-box {
+        border-radius: 12px;
+        padding: 0.85rem;
+    }
+
+    .how-to-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .how-to-step {
+        font-size: 0.78rem;
+    }
+
+    .compare-panel-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .compare-filter-grid { grid-template-columns: 1fr; }
+    .compare-filter-district {
+        padding-bottom: 0;
+    }
+
+    .compare-helper {
+        position: static;
+    }
+
+    .compare-actions-bar {
+        gap: 0.65rem;
+    }
+
+    .compare-actions { width: 100%; }
+    .compare-actions .btn {
+        flex: 1 1 100%;
+        min-height: 2.3rem;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .district-selection-strip {
+        align-items: stretch;
+        border-radius: 12px;
+        padding: 0.6rem;
+    }
+
+    .district-selection-pill {
+        border-radius: 10px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .compare-stat-value {
+        font-size: 1.2rem;
+    }
+
+    .stat-meaning,
+    .chart-meaning,
+    .psb-text {
+        font-size: 0.78rem;
+    }
+
+    .compare-chart-frame {
+        height: 300px;
+    }
+
+    .chart-empty-state {
+        border-radius: 12px;
+        padding: 0.75rem;
+    }
+
+    .compare-table-wrap {
+        border: 1px solid rgba(226,232,240,0.9);
+        border-radius: 12px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+        padding: 0.65rem;
+        font-size: 0.78rem;
+    }
+
+    .insight-item {
+        border-radius: 12px;
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .compare-shell {
+        gap: 0.65rem;
+    }
+
+    .compare-hero,
+    .how-to,
+    .compare-panel,
+    .compare-stat-card,
+    .plain-summary-box {
+        border-radius: 10px;
+        padding: 0.72rem;
+    }
+
+    .compare-hero h1 {
+        font-size: 1.15rem;
+    }
+
+    .compare-badges span,
+    .compare-badge,
+    .compare-actions-note,
+    .district-selection-empty,
+    .district-selection-pill,
+    .compare-panel-header p,
+    .compare-stat-note,
+    .insight-item p {
+        font-size: 0.76rem;
+    }
+
+    .compare-panel-header h3 {
+        font-size: 0.98rem;
+    }
+
+    .form-label {
+        font-size: 0.78rem;
+        line-height: 1.25;
+    }
+
+    .form-select {
+        font-size: 0.82rem;
+        padding: 0.48rem 0.6rem;
+    }
+
+    .compare-actions {
+        gap: 0.45rem;
+    }
+
+    .compare-actions .btn {
+        font-size: 0.78rem;
+        padding: 0.5rem 0.6rem;
+    }
+
+    .compare-chart-frame {
+        height: 260px;
+    }
+
+    .compare-table {
+        min-width: 560px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+        padding: 0.55rem;
+        font-size: 0.72rem;
+    }
+
+    .empty-state {
+        padding: 1.2rem 0.65rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="compare-shell">
+    <section class="compare-hero">
+        <div>
+            <h1 class="fw-bold"><i class="fas fa-scale-balanced me-2"></i>District Comparison</h1>
+            <p>Choose districts and compare them side by side to see which is hotter, drier, wetter, or more drought-affected, and how conditions have changed over time.</p>
+        </div>
+        <div class="compare-badges">
+            <span><i class="fas fa-map-pin"></i> Up to 4 Districts</span>
+            <span><i class="fas fa-chart-column"></i> Side-by-side charts</span>
+            <span><i class="fas fa-file-csv"></i> Download CSV</span>
+        </div>
+    </section>
+
+    <div class="how-to">
+        <div class="how-to-title"><i class="fas fa-scale-balanced"></i> How to use this page</div>
+        <div class="how-to-steps">
+            <div class="how-to-step">
+                <div class="how-to-num">1</div>
+                <div>Use the <strong>province filter</strong> to narrow the district lists, then choose at least <strong>2 districts</strong>.</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">2</div>
+                <div>Choose a <strong>year</strong> and the variable to compare: rainfall, daytime temperature, soil moisture, or drought.</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">3</div>
+                <div>Click <strong>Compare</strong> to load the charts, summary cards, and comparison table.</div>
+            </div>
+            <div class="how-to-step">
+                <div class="how-to-num">4</div>
+                <div>Use <strong>CSV</strong> to download the selected comparison for reports or follow-up analysis.</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="compare-panel">
+        <div class="compare-panel-header">
+            <div>
+                <h3>Choose districts to compare</h3>
+                <p>Select a reporting year, a focus variable, and the districts you want to compare.</p>
+            </div>
+            <div class="compare-badge" id="comparisonSelectionSummary">
+                <i class="fas fa-sliders-h"></i>
+                <span>No districts selected yet</span>
+            </div>
+        </div>
+
+        <div class="compare-filter-grid">
+            <div class="compare-filter-main">
+                <label class="form-label fw-semibold" for="comparisonProvince">Filter by province</label>
+                <select id="comparisonProvince" class="form-select">
+                    <option value="">All Provinces</option>
+                    {% for province in dashboard_provinces|default([]) %}
+                    <option value="{{ province }}">{{ province }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="compare-filter-main">
+                <label class="form-label fw-semibold" for="comparisonYear">Year</label>
+                <select id="comparisonYear" class="form-select">
+                    {% for year in dashboard_years|default([]) %}
+                    <option value="{{ year }}" {% if dashboard_latest_year and year == dashboard_latest_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="compare-filter-main">
+                <label class="form-label fw-semibold" for="focusMetric">What do you want to compare?</label>
+                <select id="focusMetric" class="form-select">
+                    <option value="rainfall">Rainfall (how much rain fell)</option>
+                    <option value="temperature">Daytime temperature (hottest part of day)</option>
+                    <option value="soil_moisture">Soil moisture (how wet the soil is)</option>
+                    <option value="drought">Drought conditions (how dry the area was)</option>
+                </select>
+            </div>
+            <div class="compare-filter-district">
+                <label class="form-label fw-semibold" for="districtA">District 1</label>
+                <select id="districtA" class="form-select">
+                    <option value="">Select district</option>
+                    {% for district in dashboard_districts|default([]) %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+                <div class="compare-helper">District lists follow the province filter.</div>
+            </div>
+            <div class="compare-filter-district">
+                <label class="form-label fw-semibold" for="districtB">District 2</label>
+                <select id="districtB" class="form-select">
+                    <option value="">Select district</option>
+                    {% for district in dashboard_districts|default([]) %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="compare-filter-district">
+                <label class="form-label fw-semibold" for="districtC">District 3</label>
+                <select id="districtC" class="form-select">
+                    <option value="">Optional district</option>
+                    {% for district in dashboard_districts|default([]) %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="compare-filter-district">
+                <label class="form-label fw-semibold" for="districtD">District 4</label>
+                <select id="districtD" class="form-select">
+                    <option value="">Optional district</option>
+                    {% for district in dashboard_districts|default([]) %}
+                    <option value="{{ district }}">{{ district }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="compare-actions-bar">
+                <div class="compare-actions-note" id="comparisonActionsNote">Waiting for at least two selected districts.</div>
+                <div class="compare-actions">
+                    <button id="comparisonApplyBtn" class="btn btn-primary" type="button" disabled><i class="fas fa-filter me-2"></i>Compare</button>
+                    <button id="comparisonClearDistrictsBtn" class="btn btn-outline-secondary" type="button" disabled><i class="fas fa-eraser me-2"></i>Clear</button>
+                    <button id="comparisonExportBtn" class="btn btn-outline-primary" type="button" disabled><i class="fas fa-file-csv me-2"></i>Download CSV</button>
+                    <button id="comparisonResetBtn" class="btn btn-outline-secondary" type="button"><i class="fas fa-rotate-left me-2"></i>Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="districtSelectionStrip" class="district-selection-strip" aria-live="polite">
+            <span class="district-selection-empty"><i class="fas fa-circle-info me-1"></i>No districts selected yet. Choose from the dropdowns above.</span>
+        </div>
+    </section>
+
+    <section class="compare-stats">
+        <article class="compare-stat-card">
+            <div class="compare-stat-label">Best performing district</div>
+            <div class="compare-stat-value" id="leadingDistrictValue">--</div>
+            <p class="compare-stat-note" id="leadingDistrictNote">The district with the highest value for the selected comparison variable.</p>
+            <div class="stat-meaning">This is the district that ranks highest for what you chose to compare, such as most rainfall or strongest soil moisture.</div>
+        </article>
+        <article class="compare-stat-card">
+            <div class="compare-stat-label">Difference between districts</div>
+            <div class="compare-stat-value" id="comparisonGapValue">--</div>
+            <p class="compare-stat-note" id="comparisonGapNote">How far apart the highest and lowest selected districts are for the selected variable.</p>
+            <div class="stat-meaning">A large gap means the selected districts have very different climate conditions.</div>
+        </article>
+        <article class="compare-stat-card">
+            <div class="compare-stat-label">Years of data shown</div>
+            <div class="compare-stat-value" id="comparisonYearsValue">--</div>
+            <p class="compare-stat-note" id="comparisonYearsNote">The number of years covered in the trend chart below.</p>
+            <div class="stat-meaning">The trend chart shows whether the selected districts are improving, worsening, or changing differently over time.</div>
+        </article>
+    </section>
+
+    <section class="compare-grid-2">
+        <div class="compare-panel">
+            <div class="compare-panel-header">
+                <div>
+                    <h3 id="comparisonChartTitle">How do the districts compare in the selected year?</h3>
+                    <p id="comparisonChartSubtitle">Side-by-side bar chart showing each district's value for the variable you selected.</p>
+                </div>
+            </div>
+            <div class="chart-container compare-chart-frame">
+                <div id="districtComparisonEmpty" class="chart-empty-state">
+                    <div>
+                        <i class="fas fa-scale-balanced" style="font-size:1.8rem;color:#94a3b8;margin-bottom:.5rem;display:block;"></i>
+                        <p>Select at least two districts above and click <strong>Compare</strong> to load this chart.</p>
+                    </div>
+                </div>
+                <canvas id="districtComparisonChart"></canvas>
+            </div>
+            <div class="chart-meaning">
+                <strong>How to read this:</strong> Taller bars mean higher values for the selected variable. For rainfall and soil moisture, higher usually means wetter conditions. For drought score, lower is better because it means less drought pressure.
+            </div>
+        </div>
+
+        <div class="compare-panel">
+            <div class="compare-panel-header">
+                <div>
+                    <h3 id="trendChartTitle">How have conditions changed over time?</h3>
+                    <p id="trendChartSubtitle">Shows each district's trend across all available years.</p>
+                </div>
+            </div>
+            <div class="chart-container compare-chart-frame">
+                <div id="districtTrendEmpty" class="chart-empty-state">
+                    <div>
+                        <i class="fas fa-chart-line" style="font-size:1.8rem;color:#94a3b8;margin-bottom:.5rem;display:block;"></i>
+                        <p>Select at least two districts above and click <strong>Compare</strong> to load this chart.</p>
+                    </div>
+                </div>
+                <canvas id="districtTrendChart"></canvas>
+            </div>
+            <div class="chart-meaning">
+                <strong>What to look for:</strong> Lines moving together mean the districts share a similar pattern. Lines moving apart show where one district is changing differently from the others.
+            </div>
+        </div>
+    </section>
+
+    <section class="compare-panel">
+        <div class="compare-panel-header">
+            <div>
+                <h3>Full side-by-side comparison</h3>
+                <p>All climate variables shown together for each selected district in the chosen year.</p>
+            </div>
+        </div>
+        <div class="compare-table-wrap">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>District</th>
+                        <th>Province</th>
+                        <th data-metric="rainfall">Rainfall (mm)</th>
+                        <th data-metric="temperature">Temperature (&deg;C)</th>
+                        <th data-metric="soil_moisture">Soil moisture (%)</th>
+                        <th data-metric="drought">Drought conditions</th>
+                    </tr>
+                </thead>
+                <tbody id="comparisonTableBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">Select at least two districts and click Compare to load the table.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="compare-panel">
+        <div class="compare-panel-header">
+            <div>
+                <h3>Key findings from the comparison</h3>
+                <p>Plain-language takeaways from the districts you selected and the variable you are comparing.</p>
+            </div>
+        </div>
+        <div id="comparisonInsights" class="insight-list">
+            <div class="insight-item">
+                <p>Key findings will appear here once you have selected at least two districts and clicked Compare.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="plain-summary-box">
+        <div class="psb-label">Why compare districts?</div>
+        <p class="psb-text">Zambia's districts can experience very different climate conditions. Comparing districts helps show where rainfall, temperature, soil moisture, and drought pressure differ most, giving planners and researchers clearer evidence for targeted climate adaptation decisions.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/rankings.js') }}"></script>
+{% endblock %}

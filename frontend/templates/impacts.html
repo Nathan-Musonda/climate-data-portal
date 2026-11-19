@@ -1,0 +1,654 @@
+{% extends "base.html" %}
+
+{% block title %}Impact Analysis - Zambia Climate Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.impact-shell { display:grid; gap:1.1rem; max-width:1200px; margin:0 auto; }
+
+.impact-hero {
+  background:linear-gradient(135deg,#102A43 0%,#1F3C57 36%,#0F766E 68%,#2E7D32 100%);
+  color:#fff; border-radius:16px; padding:1.5rem;
+  box-shadow:0 24px 56px rgba(16,42,67,.18);
+}
+.impact-hero h1,.impact-hero p { color:#fff; }
+.impact-hero p { max-width:820px; opacity:.9; margin-bottom:0; }
+.hero-badges { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:1rem; }
+.hero-badges span {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.55rem .85rem; border-radius:999px;
+  background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.15);
+  font-size:.79rem;
+}
+
+.how-to {
+  background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px;
+  padding:1rem 1.15rem;
+}
+.how-to-title {
+  font-size:.82rem; font-weight:700; color:#15803d; margin-bottom:.65rem;
+  display:flex; align-items:center; gap:.4rem;
+}
+.how-to-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.6rem; }
+.how-to-step { display:flex; align-items:flex-start; gap:.5rem; font-size:.82rem; color:#14532d; line-height:1.5; }
+.how-to-num {
+  flex-shrink:0; width:22px; height:22px; border-radius:50%;
+  background:#15803d; color:#fff; font-size:.72rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.impact-panel {
+  background:#fff; border:1px solid #e2eaf2;
+  border-radius:14px; padding:1rem;
+  box-shadow:0 8px 24px rgba(15,23,42,.05);
+}
+.impact-panel-header {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:1rem; flex-wrap:wrap; margin-bottom:.75rem;
+}
+.impact-panel-header h3 { margin-bottom:.2rem; font-size:1.05rem; }
+.impact-panel-header p { margin-bottom:0; color:#637381; font-size:.84rem; }
+.filter-summary {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.45rem .75rem; border-radius:999px;
+  background:#ecfdf5; color:#047857; font-size:.77rem; font-weight:700;
+}
+
+.district-headline {
+  background:linear-gradient(135deg,#0D3B66,#1A5276);
+  border-radius:14px; padding:1.15rem 1.25rem;
+  color:#fff; display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:1rem;
+}
+.dh-left h3 { color:#fff; font-size:1.15rem; font-weight:800; margin-bottom:.2rem; }
+.dh-left p { color:rgba(255,255,255,.82); font-size:.84rem; margin-bottom:0; }
+.dh-badge {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.5rem .9rem; border-radius:999px;
+  background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.2);
+  color:#fff; font-size:.82rem; font-weight:700;
+}
+
+.year-narrative {
+  background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:.9rem 1rem;
+  font-size:.84rem; color:#451a03; line-height:1.65;
+}
+.year-narrative strong { color:#92400e; }
+
+.climate-readings { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.85rem; }
+.cr-card {
+  background:#fff; border:1px solid #e2eaf2; border-radius:12px;
+  padding:.9rem; display:flex; flex-direction:column; gap:.3rem;
+}
+.cr-icon {
+  width:38px; height:38px; display:grid; place-items:center;
+  border-radius:10px; margin-bottom:.4rem; font-size:.95rem;
+}
+.cr-icon.temp { background:#fee2e2; color:#dc2626; }
+.cr-icon.rain { background:#dbeafe; color:#1d4ed8; }
+.cr-icon.drought { background:#fef3c7; color:#b45309; }
+.cr-icon.flood { background:#e0f2fe; color:#0284c7; }
+.cr-label { font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:#637381; font-weight:700; }
+.cr-value { font-size:1.35rem; font-weight:800; color:#0D3B66; line-height:1.1; }
+.cr-note { font-size:.75rem; color:#637381; }
+.cr-badge {
+  display:inline-flex; align-items:center; gap:.3rem;
+  padding:.22rem .55rem; border-radius:999px;
+  font-size:.7rem; font-weight:700; margin-top:.15rem; width:fit-content;
+}
+.badge-good { background:#dcfce7; color:#166534; }
+.badge-moderate { background:#fef3c7; color:#854d0e; }
+.badge-bad { background:#fee2e2; color:#991b1b; }
+
+.impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.85rem; }
+.impact-card {
+  background:#fff; border:1px solid #e2eaf2; border-radius:14px; padding:1rem;
+  display:flex; flex-direction:column; gap:.5rem;
+}
+.impact-card-header { display:flex; align-items:center; gap:.65rem; }
+.impact-card-icon {
+  width:42px; height:42px; display:grid; place-items:center;
+  border-radius:12px; font-size:1.1rem; flex-shrink:0;
+}
+.ic-people { background:#fce7f3; color:#be185d; }
+.ic-crops { background:#dcfce7; color:#15803d; }
+.ic-livestock { background:#fef3c7; color:#b45309; }
+.ic-water { background:#dbeafe; color:#1d4ed8; }
+.impact-card-title { font-size:.9rem; font-weight:700; color:#0D3B66; }
+.impact-card-subtitle { font-size:.78rem; color:#637381; }
+.impact-card-value { font-size:1.45rem; font-weight:800; color:#0D3B66; line-height:1.1; }
+.impact-level {
+  display:flex; align-items:center; gap:.5rem; padding:.5rem .75rem;
+  border-radius:8px; font-size:.82rem; font-weight:700;
+}
+.level-low { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+.level-moderate { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
+.level-high { background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; }
+.level-severe { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+.impact-desc { font-size:.81rem; color:#475569; line-height:1.6; }
+.impact-bullets { padding-left:1.1rem; margin:0; }
+.impact-bullets li { font-size:.8rem; color:#475569; line-height:1.6; margin-bottom:.15rem; }
+.dataset-note {
+  font-size:.8rem; color:#637381; background:#f8fafc;
+  border:1px dashed #cbd5e1; border-radius:10px; padding:.8rem .9rem;
+}
+
+.chart-grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+.chart-card-lg {
+  background:#fff; border:1px solid #e2eaf2;
+  border-radius:14px; padding:1rem;
+  box-shadow:0 8px 24px rgba(15,23,42,.04); height:100%;
+}
+.chart-card-lg .chart-container { height:320px; }
+.chart-header { margin-bottom:.75rem; }
+.chart-title {
+  font-size:.93rem; font-weight:700; color:#0D3B66; margin-bottom:.2rem;
+  display:flex; align-items:center; gap:.4rem;
+}
+.chart-subtitle { font-size:.81rem; color:#637381; }
+.chart-meaning {
+  font-size:.78rem; background:#f0fdf4; border:1px solid #bbf7d0;
+  border-radius:6px; padding:.4rem .6rem; color:#14532d; line-height:1.5;
+  margin-top:.6rem;
+}
+
+.section-divider {
+  display:flex; align-items:center; gap:.75rem; color:#637381; font-size:.8rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.section-divider::before,.section-divider::after {
+  content:""; flex:1; height:1px; background:#e2eaf2;
+}
+
+.impact-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; }
+.impact-stat-card {
+  background:#fff; border:1px solid #e2eaf2; border-radius:14px; padding:1rem;
+}
+.impact-stat-icon {
+  width:44px; height:44px; display:grid; place-items:center;
+  border-radius:12px; margin-bottom:.7rem;
+  background:#dcfce7; color:#15803d; font-size:1rem;
+}
+.impact-stat-label {
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.08em;
+  color:#637381; font-weight:700; margin-bottom:.3rem;
+}
+.impact-stat-value { font-size:1.5rem; font-weight:800; color:#0D3B66; line-height:1.1; margin:.3rem 0; }
+.impact-stat-note { color:#637381; font-size:.79rem; margin-bottom:.35rem; }
+.stat-meaning {
+  font-size:.75rem; background:#f0fdf4; border-radius:6px;
+  padding:.35rem .5rem; color:#14532d; line-height:1.45; margin-top:.3rem;
+}
+
+.insight-list,.timeline-list,.limitation-list { display:grid; gap:.75rem; }
+.insight-item,.timeline-item,.limitation-item {
+  border:1px solid #e2eaf2; border-radius:12px; padding:.9rem 1rem; background:#fff;
+}
+.insight-item p,.limitation-item p { margin-bottom:0; color:#637381; }
+.timeline-item { display:grid; gap:.35rem; }
+.timeline-top {
+  display:flex; justify-content:space-between; align-items:center; gap:.75rem; flex-wrap:wrap;
+}
+.timeline-year { font-size:1rem; font-weight:800; color:#0D3B66; }
+.timeline-score {
+  display:inline-flex; align-items:center; gap:.35rem; padding:.35rem .65rem;
+  border-radius:999px; background:#ecfdf5; color:#047857; font-size:.76rem; font-weight:700;
+}
+.timeline-text { color:#475569; font-size:.84rem; line-height:1.6; margin-bottom:0; }
+.limitation-item strong { display:block; margin-bottom:.25rem; color:#0D3B66; }
+
+.plain-summary-box {
+  background:#f0fdf4; border-left:3px solid #15803d;
+  border-radius:0 12px 12px 0; padding:.85rem 1rem;
+}
+.psb-label {
+  font-size:.72rem; font-weight:700; color:#15803d; text-transform:uppercase;
+  letter-spacing:.05em; margin-bottom:.4rem;
+}
+.psb-text { font-size:.85rem; color:#14532d; line-height:1.65; margin-bottom:0; }
+
+.page-note {
+  background:#fff; border:1px solid #e2eaf2; border-radius:14px;
+  padding:1rem; color:#637381;
+}
+.page-note h5 { color:#0D3B66; margin-bottom:.6rem; }
+
+@media(max-width:1200px){
+  .climate-readings,
+  .impact-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .impact-grid,
+  .chart-grid-2 { grid-template-columns:1fr; }
+}
+@media(max-width:768px){
+  .impact-hero { padding:1.1rem; border-radius:12px; }
+  .climate-readings,
+  .impact-stats,
+  .impact-grid { grid-template-columns:1fr; }
+  .chart-card-lg .chart-container { height:240px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="impact-shell">
+
+  <section class="impact-hero">
+    <h1 class="fw-bold mb-2"><i class="fas fa-chart-bar me-2"></i>How did climate affect people, crops, and water systems?</h1>
+    <p>Select a district and year to see local climate conditions and impact information for that place, then scroll down for the wider national picture across Zambia.</p>
+    <div class="hero-badges">
+      <span><i class="fas fa-map-pin"></i> District-level view</span>
+      <span><i class="fas fa-users"></i> People affected</span>
+      <span><i class="fas fa-seedling"></i> Crop yield</span>
+      <span><i class="fas fa-bolt"></i> Electricity output</span>
+    </div>
+  </section>
+
+  <div class="how-to">
+    <div class="how-to-title"><i class="fas fa-chart-line"></i> How to use this page</div>
+    <div class="how-to-steps">
+      <div class="how-to-step">
+        <div class="how-to-num">1</div>
+        <div>Select a <strong>district</strong> and <strong>year</strong>, then click <strong>Show impact</strong>.</div>
+      </div>
+      <div class="how-to-step">
+        <div class="how-to-num">2</div>
+        <div>Read the summary cards to see the temperature, rainfall, drought, flood conditions, and number of people affected in that place and year.</div>
+      </div>
+      <div class="how-to-step">
+        <div class="how-to-num">3</div>
+        <div>Use the <strong>impact cards</strong> to see values for people affected, crop yield, livestock losses, food prices, lake level, and electricity output.</div>
+      </div>
+      <div class="how-to-step">
+        <div class="how-to-num">4</div>
+        <div>Scroll down for the <strong>national overview</strong> to compare provinces and identify the years when climate conditions were most difficult.</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="impact-panel">
+    <div class="impact-panel-header">
+      <div>
+        <h3>Choose a district and year</h3>
+      <p>The local section updates to show the climate conditions and impact information available for that place and time.</p>
+      </div>
+      <div class="filter-summary" id="impactFilterSummary">
+        <i class="fas fa-map-pin"></i>
+        <span id="impactFilterLabel">No district selected yet</span>
+      </div>
+    </div>
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Province</label>
+        <select id="impactProvince" class="form-select">
+          <option value="">All Provinces</option>
+          {% for province in dashboard_provinces|default([]) %}
+          <option value="{{ province }}">{{ province }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">District <span style="color:#dc2626">*</span></label>
+        <select id="impactDistrict" class="form-select">
+          <option value="">Select a district</option>
+          {% for district in dashboard_districts|default([]) %}
+          <option value="{{ district }}">{{ district }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold">Year <span style="color:#dc2626">*</span></label>
+        <select id="impactYear" class="form-select">
+          {% for year in dashboard_years|default([]) %}
+          <option value="{{ year }}" {% if dashboard_latest_year and year == dashboard_latest_year %}selected{% endif %}>{{ year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button id="impactApplyBtn" class="btn btn-primary w-100">
+          <i class="fas fa-search me-2"></i>Show impact
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="district-headline" id="impactHeadline" style="display:none;">
+    <div class="dh-left">
+      <h3 id="impactHeadlineTitle">District, Year</h3>
+      <p id="impactHeadlineDesc">Climate conditions and impact information for communities, farming, water, and electricity.</p>
+    </div>
+    <div class="dh-badge" id="impactOverallBadge">
+      <i class="fas fa-circle-info"></i> Loading overall climate pressure
+    </div>
+  </div>
+
+  <div class="year-narrative" id="impactNarrative" style="display:none;">
+    <strong id="impactNarrativeYear">Year summary:</strong>
+    <span id="impactNarrativeText">Loading narrative...</span>
+  </div>
+
+  <div id="impactClimateSection" style="display:none;">
+    <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#637381;margin-bottom:.6rem;">
+      Climate conditions recorded in this district and year
+    </p>
+    <div class="climate-readings">
+      <div class="cr-card">
+        <div class="cr-icon temp"><i class="fas fa-thermometer-half"></i></div>
+        <div class="cr-label">Daytime temperature</div>
+        <div class="cr-value" id="impactTempValue">--</div>
+        <div class="cr-note">Average hottest part of the day</div>
+        <div class="cr-badge" id="impactTempBadge">--</div>
+      </div>
+      <div class="cr-card">
+        <div class="cr-icon rain"><i class="fas fa-cloud-rain"></i></div>
+        <div class="cr-label">Rainfall received</div>
+        <div class="cr-value" id="impactRainfallValue">--</div>
+        <div class="cr-note">Average rainfall across the selected year</div>
+        <div class="cr-badge" id="impactRainfallBadge">--</div>
+      </div>
+      <div class="cr-card">
+        <div class="cr-icon drought"><i class="fas fa-sun"></i></div>
+        <div class="cr-label">Drought conditions</div>
+        <div class="cr-value" id="impactDroughtValue">--</div>
+        <div class="cr-note">Dominant drought level recorded</div>
+        <div class="cr-badge" id="impactDroughtBadge">--</div>
+      </div>
+      <div class="cr-card">
+        <div class="cr-icon flood"><i class="fas fa-house-flood-water"></i></div>
+        <div class="cr-label">Flood events</div>
+        <div class="cr-value" id="impactFloodValue">--</div>
+        <div class="cr-note">High-rainfall flood-signal records</div>
+        <div class="cr-badge" id="impactFloodBadge">--</div>
+      </div>
+      <div class="cr-card">
+        <div class="cr-icon" style="background:#f3e8ff;color:#7e22ce;"><i class="fas fa-users"></i></div>
+        <div class="cr-label">People affected</div>
+        <div class="cr-value" id="impactPopulationValue">--</div>
+        <div class="cr-note">People recorded as affected in the selected year</div>
+        <div class="cr-badge" id="impactPopulationBadge">--</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="impactCardsSection" style="display:none;">
+    <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#637381;margin-bottom:.6rem;">
+      Reported local impact information
+    </p>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-people"><i class="fas fa-users"></i></div>
+          <div>
+            <div class="impact-card-title">People affected</div>
+            <div class="impact-card-subtitle">Affected population reported for the selected district and year</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactPeopleValue">--</div>
+        <div class="impact-level" id="impactPeopleLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactPeopleDesc">Loading value...</p>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-crops"><i class="fas fa-seedling"></i></div>
+          <div>
+            <div class="impact-card-title">Crop yield</div>
+            <div class="impact-card-subtitle">Average crop yield reported for this view</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactCropsValue">--</div>
+        <div class="impact-level" id="impactCropsLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactCropsDesc">Loading value...</p>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-livestock"><i class="fas fa-horse"></i></div>
+          <div>
+            <div class="impact-card-title">Livestock mortality</div>
+            <div class="impact-card-subtitle">Average livestock mortality percentage recorded</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactLivestockValue">--</div>
+        <div class="impact-level" id="impactLivestockLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactLivestockDesc">Loading value...</p>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-water"><i class="fas fa-droplet"></i></div>
+          <div>
+            <div class="impact-card-title">Food price</div>
+            <div class="impact-card-subtitle">Average food price reported for this view</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactWaterValue">--</div>
+        <div class="impact-level" id="impactWaterLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactWaterDesc">Loading value...</p>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-water"><i class="fas fa-water"></i></div>
+          <div>
+            <div class="impact-card-title">Lake Kariba level</div>
+            <div class="impact-card-subtitle">Average lake level reported for this view</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactLakeValue">--</div>
+        <div class="impact-level" id="impactLakeLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactLakeDesc">Loading value...</p>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card-header">
+          <div class="impact-card-icon ic-water"><i class="fas fa-bolt"></i></div>
+          <div>
+            <div class="impact-card-title">Electricity output</div>
+            <div class="impact-card-subtitle">Average hydropower output reported for this view</div>
+          </div>
+        </div>
+        <div class="impact-card-value" id="impactPowerValue">--</div>
+        <div class="impact-level" id="impactPowerLevel"><i class="fas fa-circle-info"></i> Loading...</div>
+        <p class="impact-desc" id="impactPowerDesc">Loading value...</p>
+      </div>
+    </div>
+    <div class="dataset-note mt-3" id="impactDatasetNote">
+      These cards show the reported values currently available for the selected district and year. Relief intervention information is not shown yet because it has not been filled in.
+    </div>
+  </div>
+
+  <section class="chart-card-lg" id="impactDistrictChartSection" style="display:none;">
+    <div class="chart-header">
+      <div class="chart-title"><i class="fas fa-chart-line me-2 text-primary"></i>How have climate conditions changed in this district over time?</div>
+      <div class="chart-subtitle" id="impactDistrictChartSubtitle">Year-by-year overall climate pressure for the selected district from 2015 to 2025.</div>
+    </div>
+    <div class="chart-container" style="height:320px;">
+      <canvas id="impactDistrictChart"></canvas>
+    </div>
+    <div class="chart-meaning">
+      <strong>What to look for:</strong> Higher bars mean stronger combined pressure from heat, low rainfall, drought, and flood-risk rainfall. The highlighted bar shows the year you selected.
+    </div>
+  </section>
+
+  <div class="section-divider">National overview - all districts and provinces</div>
+
+  <section class="impact-panel">
+    <div class="impact-panel-header">
+      <div>
+        <h3>Combined climate impact - all of Zambia</h3>
+        <p>Showing how temperature, rainfall, floods, and drought interact across Zambia from 2015 to 2025.</p>
+      </div>
+      <div class="filter-summary">
+        <i class="fas fa-chart-line"></i>
+        <span>All Zambia - 2015-2025</span>
+      </div>
+    </div>
+    <p class="mb-0" style="font-size:.85rem;color:#637381;">The individual pages for Temperature, Rainfall, Flood Events, and Drought each show one variable in detail. This page combines all four to reveal patterns that only become visible when you look at them together.</p>
+  </section>
+
+  <section class="impact-stats">
+    <article class="impact-stat-card">
+      <div class="impact-stat-icon"><i class="fas fa-calendar-xmark"></i></div>
+      <div class="impact-stat-label">Most difficult year</div>
+      <div class="impact-stat-value" id="worstClimateYear">--</div>
+      <p class="impact-stat-note">The year with the most difficult overall climate conditions across the four indicators on this page.</p>
+      <div class="stat-meaning">This is the year when heat, rainfall deficit, drought pressure, and flood signals peaked together most strongly.</div>
+    </article>
+    <article class="impact-stat-card">
+      <div class="impact-stat-icon"><i class="fas fa-map-pin"></i></div>
+      <div class="impact-stat-label">Most at-risk province</div>
+      <div class="impact-stat-value" id="mostAtRiskProvince">--</div>
+      <p class="impact-stat-note">The province facing the highest combined pressure from all four climate variables.</p>
+      <div class="stat-meaning">These are the provinces that repeatedly sit near the top for several climate difficulties at once.</div>
+    </article>
+    <article class="impact-stat-card">
+      <div class="impact-stat-icon"><i class="fas fa-house-flood-water"></i></div>
+      <div class="impact-stat-label">Total flood events</div>
+      <div class="impact-stat-value" id="totalFloodEvents">--</div>
+      <p class="impact-stat-note">Total number of flood-risk rainfall records across Zambia from 2015 to 2025.</p>
+      <div class="stat-meaning">These records indicate periods where rainfall intensity moved into the local flood-signal range.</div>
+    </article>
+    <article class="impact-stat-card">
+      <div class="impact-stat-icon"><i class="fas fa-sun"></i></div>
+      <div class="impact-stat-label">Years with severe drought</div>
+      <div class="impact-stat-value" id="severeDroughtYears">--</div>
+      <p class="impact-stat-note">Number of years where severe drought was recorded nationally.</p>
+      <div class="stat-meaning">These are years when drought conditions became widespread enough to register clearly in the national trend.</div>
+    </article>
+  </section>
+
+  <section class="chart-card-lg">
+    <div class="chart-header">
+      <div class="chart-title"><i class="fas fa-chart-line me-2 text-danger"></i>Which years were the most difficult for Zambia?</div>
+      <div class="chart-subtitle" id="combinedStressSubtitle">Shows an overall climate pressure score for each year by combining temperature, rainfall, drought, and flood signals into one simple summary.</div>
+    </div>
+    <div class="chart-container" style="height:380px;">
+      <canvas id="combinedStressChart"></canvas>
+    </div>
+    <div class="chart-meaning">
+      <strong>How to read this:</strong> Taller bars mean more difficult climate conditions in that year. The highest bars point to the years when the country faced the strongest overlap of several climate problems.
+    </div>
+  </section>
+
+  <section class="chart-grid-2">
+    <div class="chart-card-lg">
+      <div class="chart-header">
+        <div class="chart-title"><i class="fas fa-map-marked-alt me-2 text-warning"></i>Which provinces face the most overall climate pressure?</div>
+        <div class="chart-subtitle" id="provinceRiskSubtitle">Ranks Zambia's provinces by overall climate vulnerability using temperature, rainfall, drought, and flood data together.</div>
+      </div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="provinceRiskChart"></canvas>
+      </div>
+      <div class="chart-meaning">
+        <strong>What this means:</strong> Provinces near the top face overlapping climate pressures, not just one isolated problem.
+      </div>
+    </div>
+    <div class="chart-card-lg">
+      <div class="chart-header">
+        <div class="chart-title"><i class="fas fa-chart-line me-2 text-primary"></i>Does more rain always mean more floods?</div>
+        <div class="chart-subtitle" id="floodRainfallSubtitle">Compares annual rainfall against flood event frequency across Zambia.</div>
+      </div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="floodRainfallChart"></canvas>
+      </div>
+      <div class="chart-meaning">
+        <strong>What to look for:</strong> Years with strong flood signals but only moderate rainfall often point to timing, runoff, and saturation problems rather than rainfall totals alone.
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-grid-2">
+    <div class="chart-card-lg">
+      <div class="chart-header">
+        <div class="chart-title"><i class="fas fa-chart-bar me-2 text-warning"></i>Do dry years always produce the worst droughts?</div>
+        <div class="chart-subtitle" id="droughtRainfallSubtitle">Compares annual rainfall against drought severity across Zambia.</div>
+      </div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="droughtRainfallChart"></canvas>
+      </div>
+      <div class="chart-meaning">
+        <strong>What to look for:</strong> Some years still show strong drought even when rainfall is not extremely low, which can happen when rainfall timing is poor or evaporation is high.
+      </div>
+    </div>
+    <div class="chart-card-lg">
+      <div class="chart-header">
+        <div class="chart-title"><i class="fas fa-calendar-alt me-2 text-info"></i>Which months carry the most climate risk?</div>
+        <div class="chart-subtitle" id="seasonalVulnerabilitySubtitle">Shows how climate pressure shifts across the months of the year using rainfall and flood patterns.</div>
+      </div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="seasonalVulnerabilityChart"></canvas>
+      </div>
+      <div class="chart-meaning">
+        <strong>Zambia's risk calendar:</strong> November to March carries higher rainfall and flood risk, while later dry-season months show stronger drought and heat stress.
+      </div>
+    </div>
+  </section>
+
+  <section class="impact-panel">
+    <div class="impact-panel-header">
+      <div>
+        <h3>Key findings</h3>
+        <p>Plain-language takeaways from the overall climate pressure analysis across Zambia.</p>
+      </div>
+    </div>
+    <div id="impactInsights" class="insight-list">
+      <div class="insight-item">
+        <p>Key findings will appear here after the data loads.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="impact-panel">
+    <div class="impact-panel-header">
+      <div>
+        <h3>What happened in each year?</h3>
+        <p>A year-by-year reading of overall climate conditions from 2015 to 2025.</p>
+      </div>
+    </div>
+    <div id="impactYearTimeline" class="timeline-list">
+      <div class="timeline-item">
+        <div class="timeline-top">
+          <div class="timeline-year">Loading years</div>
+          <div class="timeline-score">Overall climate pressure --</div>
+        </div>
+        <p class="timeline-text">Year-by-year climate notes will appear here after the data loads.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="plain-summary-box">
+    <div class="psb-label">The bigger picture - what four variables tell us together</div>
+    <p class="psb-text">Looking at temperature, rainfall, floods, and drought together reveals Zambia's pattern of overlapping climate difficulties. Hotter conditions increase evaporation, low rainfall deepens drought pressure, and intense rain after dry periods can still trigger flooding because the ground cannot absorb water quickly enough. This page is designed to show both the local district story and the wider national pattern in one place.</p>
+  </div>
+
+  <section class="impact-panel">
+    <div class="impact-panel-header">
+      <div>
+        <h3>Limits of this page</h3>
+        <p>Important scope notes for interpreting the overall climate pressure analysis.</p>
+      </div>
+    </div>
+    <div class="limitation-list">
+      <div class="limitation-item">
+        <strong>Local impact cards use only the information currently available</strong>
+        <p>The local cards on this page show values such as crop yield, hydropower output, food prices, livestock losses, lake level, and affected population. They summarize reported information already available in the portal.</p>
+      </div>
+      <div class="limitation-item">
+        <strong>Some sections still have missing information</strong>
+        <p>Relief intervention information has not yet been filled in, so this page cannot show support actions for those areas yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-note">
+    <h5><i class="fas fa-info-circle me-2"></i>About this page</h5>
+    <p class="mb-2">This page brings together findings from the Temperature, Rainfall, Flood Events, and Drought sections to show how climate patterns connect to everyday impacts across Zambia.</p>
+    <p class="mb-0">The local impact cards use information already available in the portal, while the wider charts summarize the broader climate patterns behind those impacts.</p>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/impacts.js') }}"></script>
+{% endblock %}

@@ -205,6 +205,6 @@ Before loading a new dataset into the system, confirm that:
 
 The current implementation references these files for schema and validation behaviour:
 
-- [scripts/init_db.py](/abs/path/c:/Users/Nathan%20Musonda/OneDrive/Desktop/Climate%20Data%20Visualization%20Portal/scripts/init_db.py:38)
+- [backend/scripts/init_db.py](/abs/path/c:/Users/Nathan%20Musonda/OneDrive/Desktop/Climate%20Data%20Visualization%20Portal/backend/scripts/init_db.py:38)
 - [utils/data_loader.py](/abs/path/c:/Users/Nathan%20Musonda/OneDrive/Desktop/Climate%20Data%20Visualization%20Portal/utils/data_loader.py:43)
 - [utils/validation.py](/abs/path/c:/Users/Nathan%20Musonda/OneDrive/Desktop/Climate%20Data%20Visualization%20Portal/utils/validation.py:41)

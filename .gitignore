@@ -26,3 +26,9 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
+
+.venv/
+.env
+__pycache__/
+backend/logs/
+*.log
